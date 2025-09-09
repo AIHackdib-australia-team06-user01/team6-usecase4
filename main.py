@@ -1,13 +1,23 @@
 import asyncio
+import os
+from dotenv import load_dotenv
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.ui import Console
 from autogen_ext.models.openai import OpenAIChatCompletionClient
 
+# Load environment variables from .env file
+load_dotenv()
+
 # Define a model client. You can use other model client that implements
 # the `ChatCompletionClient` interface.
+
+api_key = os.getenv("OPENAI_API_KEY")
+if api_key is None:
+    raise ValueError("OPENAI_API_KEY environment variable not set.")
+
 model_client = OpenAIChatCompletionClient(
     model="gpt-4o",
-    # api_key="YOUR_API_KEY",
+    api_key=api_key,
 )
 
 
