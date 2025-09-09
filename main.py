@@ -3,7 +3,9 @@ import os
 from dotenv import load_dotenv
 from autogen_agentchat.agents import AssistantAgent
 from autogen_agentchat.ui import Console
-from autogen_ext.models.openai import OpenAIChatCompletionClient
+# from autogen_ext.models.openai import OpenAIChatCompletionClient
+from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
+from azure.identity import DefaultAzureCredential
 
 # Load environment variables from .env file
 load_dotenv()
@@ -15,11 +17,14 @@ api_key = os.getenv("OPENAI_API_KEY")
 if api_key is None:
     raise ValueError("OPENAI_API_KEY environment variable not set.")
 
-model_client = OpenAIChatCompletionClient(
-    model="gpt-4o",
-    api_key=api_key,
+model_client = AzureOpenAIChatCompletionClient(
+    azure_deployment="gpt-5-mini",
+    model="gpt-5-mini",
+    api_version="2024-12-01-preview",
+    azure_endpoint="https://aihac-mfbwdeld-eastus2.cognitiveservices.azure.com/",
+    # azure_ad_token_provider=token_provider,  # Optional if you choose key-based authentication.
+    api_key=api_key, # For key-based authentication.
 )
-
 
 # Define a simple function tool that the agent can use.
 # For this example, we use a fake weather tool for demonstration purposes.
