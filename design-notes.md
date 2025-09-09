@@ -31,17 +31,42 @@ https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud/tree/main/static
 https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud/tree/main/static/content/files/configscripts
 https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud/tree/main/static/content/files/intune-config-policies
 
-# Useful Files
+# ASD Blueprint
 
-https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud/blob/main/static/content/files/Blueprint%20System%20Security%20Plan%20Annex%20Template%20(June%202025).xlsx
+[Blueprint System Security Plan Annex Template](https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud/blob/main/static/content/files/Blueprint%20System%20Security%20Plan%20Annex%20Template%20(June%202025).xlsx)
 
-./Information Security Controls and Policy/Implementing a Governance Compliance Tool with Microsoft Graph and Essential Eight 
 
 # Useful Websites
 
 https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model
 
 https://www.cyber.gov.au/business-government/asds-cyber-security-frameworks/essential-eight/essential-eight-maturity-model-ism-mapping
+
+
+# Goal
+
+Engineering Goal: Build a tool that can assess a system’s compliance and generate a remediation plan within 1 hour.
+
+# Team Process Guidance:
+• Ingest DISP/IRAP standards and map them to system configurations.
+
+    - Use Blueprint System Security Plan Annex Template
+        - Filter the content to e8 ml2 and technical controls
+        - Review what controls map to ASD Blueprint Desired State Configuration files
+
+    - can we separate agents by config files or E8 Control categories
+
+
+• Create a checklist and scoring system.
+    - update the results in Blueprint System Security Plan Annex Template
+    - [K] Implementation status: Not Assessed, Effective, Alternate Control, Not Implemented, Ineffective, No Visibility, Not Applicable 
+    - [L] Implementation Comment
+
+• Use telemetry data to assess real-time compliance.
+
+  - ASD Blueprint Desired State Configuration files
+
+• Output must enable the analysis to be validated with security and compliance experts.
 
 
 
