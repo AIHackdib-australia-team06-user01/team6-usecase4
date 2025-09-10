@@ -161,7 +161,7 @@ class ISMControlAssessor:
             raise RuntimeError(f"Failed to load policy file: {str(e)}")
 
 
-    async def assess_control(self, ism_title: str, ism_description: str) -> Tuple[str, List[str]]:
+    async def assess_control(self, ism_title: str, ism_description: str) -> Tuple[str, List[str], str]:
         """
         Assess if an ISM control is being met by the policies using LLM.
         
@@ -182,7 +182,7 @@ class ISMControlAssessor:
             raise RuntimeError("Assessor not initialized. Call initialize() first")
                     
         if not self.policies:
-            return "Not Assessed", []
+            return "Not Assessed", [], "No policies available for assessment."
 
         # Build a precise prompt with clear instructions
         prompt = f"""
@@ -218,7 +218,7 @@ class ISMControlAssessor:
             )
             # If final_response is a Response object, get the chat_message/content
             if hasattr(final_response, "chat_message"):
-                content = dict(final_response.chat_message)["content"]
+                content = dict(dict(final_response.chat_message)["content"])
                 if isinstance(content, dict):
                     parsed_response = AgentResponseJSON(**content)
                 elif isinstance(content, str):
@@ -228,22 +228,22 @@ class ISMControlAssessor:
             else:
                 pass
 
-            return parsed_response.status, parsed_response.relevant_policies
+            return parsed_response.status, parsed_response.relevant_policies, parsed_response.explanation
         except json.JSONDecodeError:
             print("JSON decode error")
-            return "Not Assessed", []
+            return "Not Assessed", [], ""
         except (ValueError, KeyError) as e:
             print(f"Invalid LLM response format: {e}")
-            return "Not Assessed", []
+            return "Not Assessed", [], ""
         except Exception as e:
             print(f"Error during LLM assessment: {str(e)}")
-            return "Not Assessed", []
+            return "Not Assessed", [], ""
 
 async def assess_ism_control(
     ism_title: str, 
     ism_description: str, 
     policy_file: str = "asdbpsc-dsc-entra.txt"
-) -> Tuple[str, List[str]]:
+) -> Tuple[str, List[str], str]:
     """
     Main function to assess an ISM control against policies.
     
@@ -270,13 +270,13 @@ async def assess_ism_control(
             await assessor.cleanup()
     except Exception as e:
         print(f"Failed to assess ISM control: {str(e)}")
-        return "Not Assessed", []
+        return "Not Assessed", [], ""
 
 def run_assessment(
     ism_title: str, 
     ism_description: str, 
     policy_file: str = "asdbpsc-dsc-entra.txt"
-) -> Tuple[str, List[str]]:
+) -> Tuple[str, List[str], str]:
     """
     Synchronous wrapper for assess_ism_control.
     
