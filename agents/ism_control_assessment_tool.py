@@ -18,14 +18,15 @@ Setup:
     3. Install deps: uv pip install -r pyproject.toml
 
 Implementation Statuses:
-    - Not Assessed: Control has not been evaluated
-    - Effective: Control is fully implemented and effective
-    - Alternate control: Different but acceptable control is in place
-    - Not implemented: Control is missing
-    - Implemented: Control is in place but may need review
-    - Ineffective: Control exists but doesn't meet requirements
-    - No usability: Control cannot be implemented as specified
-    - Not applicable: Control is not relevant to the environment
+    - Not Assessed: Control has not yet been evaluated or reviewed for applicability or effectiveness.
+    - Fully Implemented: Control is completely in place and operating effectively as intended.
+    - Alternate Control: A different control is implemented that meets the intent and risk mitigation of the original.
+    - Not Implemented: Control is absent; no measures have been taken to address the requirement.
+    - Implemented (Needs Review): Control is in place but requires validation, testing, or periodic reassessment.
+    - Partially Implemented: Some components of the control are in place, but full compliance is not achieved.
+    - Ineffective Control: Control exists but fails to meet its intended purpose or mitigate the associated risk.
+    - Technically Unfeasible: Control cannot be implemented due to system limitations, incompatibility, or other constraints.
+    - Not Applicable: Control is irrelevant to the system's scope, architecture, or operational context.
 """
 
 import asyncio
@@ -37,7 +38,6 @@ from autogen_agentchat.agents import AssistantAgent
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 from pydantic import BaseModel
 from autogen_core import CancellationToken
-from autogen_agentchat.agents import UserProxyAgent
 from autogen_agentchat.messages import TextMessage
 
 @dataclass
@@ -62,7 +62,7 @@ class AgentResponseJSON(BaseModel):
         """Check if status is one of the valid implementation statuses."""
         valid_statuses = [
             "Not Assessed", "Effective", "Alternate control",
-            "not implemented", "implemented", "ineffective",
+            "not implemented", "implemented", "partial", "ineffective",
             "no usability", "not applicable"
         ]
         return self.status in valid_statuses
@@ -127,11 +127,21 @@ class ISMControlAssessor:
                 temperature=1, 
             )
             
-            # Initialize the agent
+            # Initialize the agent with a refined system prompt for ISM/E8 and LLM best practices
             self.agent = AssistantAgent(
                 name="security_assessor",
                 model_client=self.model_client,
-                system_message="You are a security policy assessment expert. Provide precise, evidence-based evaluations.",
+                system_message=(
+                    "You are an expert in Australian Government Information Security Manual (ISM) and Essential Eight (E8) controls, "
+                    "with deep knowledge of secure a microsoft tendancy to essential 8 level.\n"
+                    "Your task is to:\n"
+                    "- Evaluate if provided policies fully and effectively implement the specified ISM control, referencing the latest ISM (September 2025) and ASD Blueprint examples.\n"
+                    "- Identify and cite relevant policy settings, mapping them to ISM/E8 requirements.\n"
+                    "- Clearly state the implementation status using only the allowed statuses: [\"Not Assessed\", \"Effective\", \"Alternate control\", \"Not implemented\", \"Implemented\", \"Partial\", \"Ineffective\", \"No usability\", \"Not applicable\"].\n"
+                    "- Provide a concise, evidence-based explanation, highlighting any gaps or partial coverage.\n"
+                    "- If possible, suggest improvements or additional controls for full compliance.\n"
+                    "Always respond in the required JSON format."
+                ),
                 model_client_stream=True,
                 output_content_type=AgentResponseJSON,  
             )
@@ -184,29 +194,30 @@ class ISMControlAssessor:
         if not self.policies:
             return "Not Assessed", [], "No policies available for assessment."
 
-        # Build a precise prompt with clear instructions
+        # Build a refined prompt for ISM/E8, referencing ISM/ASD Blueprint, and requiring actionable, evidence-based, improvement-suggesting responses
         prompt = f"""
-        Task: Analyze if the following ISM (Information Security Manual) control is adequately addressed by the provided policies.
+        You are an expert in ISM (Information Security Manual) and Essential Eight (E8) controls, specializing evaluating assigned policies and if they meet E8 criteria.\n\n
         
-        ISM Control:
-        Title: {ism_title}
-        Description: {ism_description}
+        Task: Assess whether the following ISM control is fully, partially, or not implemented by the provided policies. Use the latest ISM (September 2025) and ASD Blueprint for Secure Cloud as references.\n\n
         
-        Available Policies:
-        {self.policies}
+        ISM Control:\nTitle: {ism_title}\nDescription: {ism_description}\n\n
         
-        Assessment Criteria:
-        1. Coverage - Do the policies fully address the control requirements?
-        2. Implementation - Are the policy settings specific and actionable?
-        3. Effectiveness - Do the policies provide adequate security measures?
-        4. Gaps - Are there any missing elements or concerns?
+        ISM Implementation Statuses:
+            - Not Assessed: Control has not yet been evaluated or reviewed for applicability or effectiveness.
+            - Fully Implemented: Control is completely in place and operating effectively as intended.
+            - Alternate Control: A different control is implemented that meets the intent and risk mitigation of the original.
+            - Not Implemented: Control is absent; no measures have been taken to address the requirement.
+            - Implemented (Needs Review): Control is in place but requires validation, testing, or periodic reassessment.
+            - Partially Implemented: Some components of the control are in place, but full compliance is not achieved.
+            - Ineffective Control: Control exists but fails to meet its intended purpose or mitigate the associated risk.
+            - Technically Unfeasible: Control cannot be implemented due to system limitations, incompatibility, or other constraints.
+            - Not Applicable: Control is irrelevant to the system's scope, architecture, or operational context.
         
-        Response Format (JSON):
-        {{
-            "status": "one of: {', '.join(self.implementation_statuses)}",
-            "relevant_policies": ["list of policy titles that address this control"],
-            "explanation": "Brief explanation of assessment reasoning and any gaps identified"
-        }}
+        Available Policies:\n{self.policies}\n\n
+        
+        Assessment Criteria:\n1. Does the policy fully address the ISM control requirements? Reference specific policy settings.\n2. Is the implementation effective and actionable? Use ISM/E8 terminology.\n3. Are there any gaps or partial implementations? Suggest improvements if needed.\n4. Cite relevant policy titles and settings.\n\n
+        Respond ONLY in this JSON format:\n{{\n    "status": "One of: Not Assessed, Effective, Alternate control, Not implemented, Implemented, Partial, Ineffective, No usability, Not applicable",\n    "relevant_policies": ["List of policy titles/settings that address this control"],\n    "explanation": "Concise, evidence-based reasoning. Reference ISM/E8 language. Suggest improvements if gaps exist."\n}}\n\n
+        References:\n- ISM Manual (September 2025): https://www.cyber.gov.au/sites/default/files/2025-09/Information%20security%20manual%20%28September%202025%29.pdf\n- ASD Blueprint: https://github.com/ASD-Blueprint/ASD-Blueprint-for-Secure-Cloud/tree/main
         """
         
         parsed_response = AgentResponseJSON(status="Not Assessed", relevant_policies=[], explanation="No response")
@@ -260,8 +271,9 @@ async def assess_ism_control(
     Raises:
         RuntimeError: If initialization fails
     """
+    Model = "gpt-5-mini"
     try:
-        assessor = ISMControlAssessor(policy_file)
+        assessor = ISMControlAssessor(policy_file,azure_deployment=Model)
         await assessor.initialize()
         
         try:
