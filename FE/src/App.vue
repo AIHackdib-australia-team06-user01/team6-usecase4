@@ -37,12 +37,62 @@ function toggleControlSelection(controlID: string) {
 function deselectAll() {
   selectedControls.value = new Set();
 }
+
+// Evaluation results state
+const controlsEvaluated = ref(0)
+const controlsPassed = ref(0)
+const controlsFailed = ref(0)
+const showResults = ref(false)
+
+
+// Show congrats gif and text if all pass
+const showCongrats = ref(false)
+
+function evaluateControls() {
+  controlsEvaluated.value = selectedControls.value.size
+  // 80% chance to pass all, else fail all
+  if (selectedControls.value.size === 0) {
+    controlsPassed.value = 0;
+    controlsFailed.value = 0;
+    showCongrats.value = false;
+    showResults.value = true;
+    return;
+  }
+  // TODO: replace this with the real evaluation logic
+  if (Math.random() < 0.8) {
+    controlsPassed.value = selectedControls.value.size;
+    controlsFailed.value = 0;
+    showCongrats.value = true;
+  } else {
+    controlsPassed.value = 0;
+    controlsFailed.value = selectedControls.value.size;
+    showCongrats.value = false;
+  }
+  showResults.value = true;
+}
+
+function clearResults() {
+  showResults.value = false
+  controlsEvaluated.value = 0
+  controlsPassed.value = 0
+  controlsFailed.value = 0
+  showCongrats.value = false
+}
 // Mock service to simulate API call
 const isLoading = ref(false)
 async function runService() {
   isLoading.value = true
-  await new Promise(resolve => setTimeout(resolve, 4444)) // Simulate 2s delay
+  await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate 2s delay
+  evaluateControls()
+  selectedControls.value = new Set()
+  openCategory.value = null
   isLoading.value = false
+}
+
+function selectAllCategory(category: string, controls: Control[]) {
+  const newSet = new Set(selectedControls.value);
+  controls.forEach(ctrl => newSet.add(ctrl.ControlID));
+  selectedControls.value = newSet;
 }
 </script>
 
@@ -52,6 +102,24 @@ async function runService() {
       <h1 class="text-3xl font-extrabold text-blue-700 dark:text-blue-400 tracking-tight">DISPruptor</h1>
       <p class="text-base text-gray-500 dark:text-gray-300 mt-1">made by Team BluePrint</p>
     </header>
+    <div v-if="showResults" class="flex flex-col items-center justify-center gap-4 mb-6">
+      <div v-if="showCongrats" class="flex flex-col items-center mb-2">
+        <img src="/giphy-1.gif" alt="Congratulations!" class="w-40 h-40 mb-2" />
+        <span class="congrats-text text-2xl font-extrabold mb-2">🎉 Congratulations! You Passed! 🎉</span>
+      </div>
+      <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded px-4 py-2">
+        <span class="font-semibold text-gray-700 dark:text-gray-200">Evaluated:</span>
+        <span class="text-blue-700 dark:text-blue-400 font-bold">{{ controlsEvaluated }}</span>
+        <span class="ml-4 font-semibold text-green-700 dark:text-green-400">Passed:</span>
+        <span class="text-green-700 dark:text-green-400 font-bold">{{ controlsPassed }}</span>
+        <span class="ml-4 font-semibold text-red-700 dark:text-red-400">Failed:</span>
+        <span class="text-red-700 dark:text-red-400 font-bold">{{ controlsFailed }}</span>
+      </div>
+      <button @click="clearResults" class="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded shadow hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none transition">Clear Results</button>
+    </div>
+
+
+
     <div v-if="isLoading" class="fixed inset-0 z-50 flex flex-col items-center justify-center bg-black bg-opacity-80">
       <img src="/giphy.gif" alt="Loading..." class="w-40 h-40 mb-6" />
       <span class="text-white text-2xl font-bold animate-pulse">Loading...</span>
@@ -91,25 +159,35 @@ async function runService() {
       </button>
     </div>
     <div v-for="(controls, category) in controlsData" :key="category" class="mb-4">
-      <button
-        class="w-full text-left px-4 py-2 bg-gray-800 text-white rounded shadow hover:bg-gray-700 focus:outline-none flex items-center justify-between"
-        @click="toggleCategory(String(category))"
-      >
-        <div class="flex items-center">
-          <span class="font-bold text-lg">{{ category }}</span>
-          <span class="ml-2 text-sm text-blue-300">({{ controls.length }} controls)</span>
-        </div>
-        <svg
-          :class="['transition-transform duration-300', openCategory === category ? 'rotate-90' : 'rotate-0']"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          class="w-5 h-5 ml-2"
+      <div class="flex items-center gap-2 mb-1">
+        <button
+          class="flex-1 text-left px-4 py-2 bg-gray-800 text-white rounded shadow hover:bg-gray-700 focus:outline-none flex items-center justify-between"
+          @click="toggleCategory(String(category))"
         >
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-        </svg>
-      </button>
+          <div class="flex items-center">
+            <span class="font-bold text-lg">{{ category }}</span>
+            <span class="ml-2 text-sm text-blue-300">({{ controls.length }} controls)</span>
+             <button
+          class="px-2 py-1 mx-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded shadow hover:bg-blue-200 dark:hover:bg-blue-800 text-xs font-semibold"
+          @click.stop="selectAllCategory(String(category), controls)"
+        >
+          Select All
+        </button>
+          </div>
+          <svg
+            :class="['transition-transform duration-300', openCategory === category ? 'rotate-90' : 'rotate-0']"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            class="w-5 h-5 ml-2"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+       
+      </div>
+
       <ul v-if="openCategory === category" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700 mt-2">
         <li
           v-for="control in controls.filter((ctrl, idx, arr) => arr.findIndex(c => c.ControlID === ctrl.ControlID) === idx).sort((a, b) => a.ControlID.localeCompare(b.ControlID))"
@@ -136,4 +214,15 @@ async function runService() {
     </div>
   </div>
 </template>
-   
+   <style scoped>
+.congrats-text {
+  animation: colorchange 2s infinite;
+}
+@keyframes colorchange {
+  0%   { color: #e74c3c; }
+  25%  { color: #f1c40f; }
+  50%  { color: #2ecc71; }
+  75%  { color: #3498db; }
+  100% { color: #e74c3c; }
+}
+</style>
