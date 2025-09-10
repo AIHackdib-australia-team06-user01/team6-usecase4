@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Response
+from fastapi.middleware.cors import CORSMiddleware
 from typing import List
 from pydantic import BaseModel
 from fastapi.responses import FileResponse
@@ -7,7 +8,17 @@ from ssp_excel_updater import update_ssp_excel
 from ism_description_svc import get_ism_description
 from agents.ism_control_assessment_tool import run_assessment
 
+
 app = FastAPI()
+
+# Allow CORS for all origins, methods, and headers
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 # Example usage paths (update as needed)
 
@@ -31,18 +42,21 @@ class StringList(BaseModel):
 @app.post("/conduct-assessment")
 async def process_strings(string_list: StringList):
 
+    results = []
+
     for ism in string_list.items:
         desc = get_ism_description(ism)
-        run_assessment(
+        result.append(run_assessment(
             ism_title=ism,
             ism_description=desc,
             policy_file="./data/asdbpsc-dsc-entra.txt"
-        )
-        
+        ))
+
+
     filename = get_output_filename()
     output_path = get_output_path(filename)
     update_ssp_excel(json_path, excel_path, output_path)
-    return {"output_file": filename}
+    return {"output_file": filename, "assessments": results}
 
 
 @app.get("/download-report")
