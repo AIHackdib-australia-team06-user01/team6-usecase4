@@ -17,7 +17,6 @@ interface CategoryControls {
 
 const controlsData = ref<CategoryControls>(entraData);
 
-
 const openCategory = ref<string | null>(null)
 function toggleCategory(category: string) {
   openCategory.value = openCategory.value === category ? null : category
@@ -34,6 +33,7 @@ function toggleControlSelection(controlID: string) {
   // Force reactivity for Set
   selectedControls.value = new Set(selectedControls.value);
 }
+
 function deselectAll() {
   selectedControls.value = new Set();
 }
@@ -59,7 +59,7 @@ function evaluateControls() {
     return;
   }
   // TODO: replace this with the real evaluation logic
-  if (Math.random() < 0.8) {
+  if (Math.random() < 0.1) {
     controlsPassed.value = selectedControls.value.size;
     controlsFailed.value = 0;
     showCongrats.value = true;
@@ -107,6 +107,10 @@ function selectAllCategory(category: string, controls: Control[]) {
         <img src="/giphy-1.gif" alt="Congratulations!" class="w-40 h-40 mb-2" />
         <span class="congrats-text text-2xl font-extrabold mb-2">🎉 Congratulations! You Passed! 🎉</span>
       </div>
+      <div v-else-if="showResults && controlsFailed === controlsEvaluated && controlsEvaluated > 0" class="flex flex-col items-center mb-2">
+        <img src="/giphy-2.gif" alt="Sad dog" class="w-40 h-40 mb-2" />
+        <span class="fail-text text-2xl font-extrabold mb-2">😢 The dog is sad because you failed. Try again!</span>
+      </div>
       <div class="flex items-center gap-2 bg-gray-100 dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded px-4 py-2">
         <span class="font-semibold text-gray-700 dark:text-gray-200">Evaluated:</span>
         <span class="text-blue-700 dark:text-blue-400 font-bold">{{ controlsEvaluated }}</span>
@@ -145,7 +149,7 @@ function selectAllCategory(category: string, controls: Control[]) {
       </div>
       <button
         @click="runService"
-        :disabled="isLoading"
+        :disabled="isLoading || selectedControls.size === 0"
         class="flex items-center px-3 py-1.5 bg-blue-600 text-white rounded shadow hover:bg-blue-700 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed ml-auto"
       >
         <svg v-if="!isLoading" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-5 h-5 mr-1">
@@ -226,3 +230,6 @@ function selectAllCategory(category: string, controls: Control[]) {
   100% { color: #e74c3c; }
 }
 </style>
+.fail-text {
+  animation: colorchange 2s infinite;
+}
