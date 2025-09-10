@@ -3,7 +3,7 @@ import openpyxl
 from typing import List, Dict
 
 
-def update_ssp_excel(json_path: str, excel_path: str, output_path: str) -> None:
+def update_ssp_excel(results: List[Dict[str, str]], excel_path: str, output_path: str) -> None:
     """
     Update the ASD blueprint SSP Excel template with results from a JSON file.
     Args:
@@ -11,9 +11,6 @@ def update_ssp_excel(json_path: str, excel_path: str, output_path: str) -> None:
         excel_path: Path to the ASD blueprint SSP Excel template (xlsx).
         output_path: Path to save the updated Excel file.
     """
-    # Load JSON data
-    with open(json_path, 'r', encoding='utf-8') as f:
-        results: List[Dict[str, str]] = json.load(f)
 
     # Map ISM control to result and comment
     result_map = {item['ism-control']: item for item in results}
