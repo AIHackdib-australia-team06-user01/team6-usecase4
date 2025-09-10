@@ -1,8 +1,11 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from typing import List
 from pydantic import BaseModel
+from fastapi.responses import FileResponse
 import os
 from ssp_excel_updater import update_ssp_excel
+from ism_description_svc import get_ism_description
+from agents.ism_control_assessment_tool import run_assessment
 
 app = FastAPI()
 
@@ -11,9 +14,12 @@ app = FastAPI()
 import datetime
 json_path = "./data/results.json"
 excel_path = "./data/Blueprint-System-Security-Plan-Annex-Template-(June 2025).xlsx"
-def get_output_path():
+
+def get_output_filename():
     now = datetime.datetime.now()
-    filename = f"System-Security-Plan-{now.strftime('%d-%m-%y-%H-%M')}.xlsx"
+    return f"System-Security-Plan-{now.strftime('%d-%m-%y-%H-%M')}.xlsx"
+
+def get_output_path(filename: str):
     output_dir = "./output"
     os.makedirs(output_dir, exist_ok=True)
     return os.path.join(output_dir, filename)
@@ -24,9 +30,28 @@ class StringList(BaseModel):
 
 @app.post("/conduct-assessment")
 async def process_strings(string_list: StringList):
-    output_path = get_output_path()
+
+    for ism in string_list.items:
+        desc = get_ism_description(ism)
+        run_assessment(
+            ism_title=ism,
+            ism_description=desc,
+            policy_file="./data/asdbpsc-dsc-entra.txt"
+        )
+        
+    filename = get_output_filename()
+    output_path = get_output_path(filename)
     update_ssp_excel(json_path, excel_path, output_path)
-    return {"output_file": output_path}
+    return {"output_file": filename}
+
+
+@app.get("/download-report")
+def download_latest_report(filename: str):
+    output_dir = "./output"
+    file_path = os.path.join(output_dir, filename)
+    if not os.path.exists(file_path):
+        return Response(content="No report found.", status_code=404)
+    return FileResponse(file_path, media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", filename=os.path.basename(file_path))
 
 if __name__ == "__main__":
     import uvicorn
