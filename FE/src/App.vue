@@ -19,6 +19,12 @@ interface CategoryControls {
 
 const controlsData = ref<CategoryControls>(entraData);
 
+function openOutputFile() {
+  if (outputFile.value) {
+    window.open(outputFile.value, '_blank');
+  }
+}
+
 const openCategory = ref<string | null>(null)
 function toggleCategory(category: string) {
   openCategory.value = openCategory.value === category ? null : category
@@ -45,13 +51,13 @@ const controlsEvaluated = ref(0)
 const controlsPassed = ref(0)
 const controlsFailed = ref(0)
 const showResults = ref(false)
-
+const outputFile = ref('')
 
 // Show congrats gif and text if all pass
 const showCongrats = ref(false)
 
 function evaluateControls() {
-  controlsEvaluated.value = selectedControls.value.size
+  
   // 80% chance to pass all, else fail all
   if (selectedControls.value.size === 0) {
     controlsPassed.value = 0;
@@ -60,14 +66,12 @@ function evaluateControls() {
     showResults.value = true;
     return;
   }
+
+  const passRate = controlsPassed.value / selectedControls.value.size
   // TODO: replace this with the real evaluation logic
-  if (Math.random() < 0.1) {
-    controlsPassed.value = selectedControls.value.size;
-    controlsFailed.value = 0;
+  if (passRate > 0.8) {
     showCongrats.value = true;
   } else {
-    controlsPassed.value = 0;
-    controlsFailed.value = selectedControls.value.size;
     showCongrats.value = false;
   }
   showResults.value = true;
@@ -93,15 +97,27 @@ async function runService() {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        controls: Array.from(selectedControls.value)
+        items: Array.from(selectedControls.value)
       })
     });
     // Optionally handle response here if needed
+    const data = await response.json();
+    // Count assessments with result 'Effective', 'Not Applicable', or 'Alternate Control'
+    if (data && Array.isArray(data.assessments)) {
+      controlsEvaluated.value = selectedControls.value.size
+      controlsPassed.value = data.assessments.filter(a => ['effective', 'not applicable', 'alternate control'].includes(a.result?.toLowerCase())).length;
+      controlsFailed.value = selectedControls.value.size - controlsPassed.value;
+      outputFile.value = `${host}/download-report?filename=${data.output_file}`;
+    } else if (data && data.output_file) {
+      outputFile.value = '';
+    } else {
+      controlsEvaluated.value = 0;
+    }
+    console.log('Service response:', data);
+    console.log('Output File:', outputFile.value);
   } catch (error) {
     console.error('API error:', error);
   }
-
-  console.log('Service response:', response);
 
   evaluateControls()
   selectedControls.value = new Set()
@@ -139,6 +155,16 @@ function selectAllCategory(category: string, controls: Control[]) {
         <span class="ml-4 font-semibold text-red-700 dark:text-red-400">Failed:</span>
         <span class="text-red-700 dark:text-red-400 font-bold">{{ controlsFailed }}</span>
       </div>
+      <button
+        v-if="outputFile && outputFile !== ''"
+        @click="openOutputFile"
+        class="px-3 py-1.5 bg-green-600 text-white rounded shadow hover:bg-green-700 focus:outline-none transition mb-2"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-1 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3" />
+        </svg>
+        Download Results
+      </button>
       <button @click="clearResults" class="px-3 py-1.5 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-200 rounded shadow hover:bg-gray-300 dark:hover:bg-gray-600 focus:outline-none transition">Clear Results</button>
     </div>
 
