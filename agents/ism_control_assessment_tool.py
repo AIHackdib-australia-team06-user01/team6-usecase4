@@ -2,7 +2,7 @@
 ISM Control Assessment Tool
 
 This module provides functionality to assess Information Security Manual (ISM) controls
-against a set of Microsoft 365 DSC policies using OpenAI's LLM capabilities.
+against a set of Microsoft 365 DSC policies using Autogen & OpenAI's LLM capabilities.
 
 The tool analyzes policy compliance and provides implementation status along with
 relevant policy matches.
@@ -18,15 +18,15 @@ Setup:
     3. Install deps: uv pip install -r pyproject.toml
 
 Implementation Statuses:
-    - Not Assessed: Control has not yet been evaluated or reviewed for applicability or effectiveness.
-    - Fully Implemented: Control is completely in place and operating effectively as intended.
-    - Alternate Control: A different control is implemented that meets the intent and risk mitigation of the original.
-    - Not Implemented: Control is absent; no measures have been taken to address the requirement.
-    - Implemented (Needs Review): Control is in place but requires validation, testing, or periodic reassessment.
-    - Partially Implemented: Some components of the control are in place, but full compliance is not achieved.
-    - Ineffective Control: Control exists but fails to meet its intended purpose or mitigate the associated risk.
-    - Technically Unfeasible: Control cannot be implemented due to system limitations, incompatibility, or other constraints.
-    - Not Applicable: Control is irrelevant to the system's scope, architecture, or operational context.
+    - Not Assessed: Control has not yet been evaluated or reviewed.
+    - Effective: Control is fully implemented and meets its objective.
+    - Alternate Control: A different control is implemented that meets or exceeds the original intent.
+    - Not Implemented: Control is absent; no measures have been taken.
+    - Partially Implemented: Some components are in place, but full compliance is not achieved.
+    - Ineffective: Control exists but fails to meet its intended purpose or mitigate the associated risk.
+    - Technically Unfeasible: Control cannot be implemented due to platform limitations or constraints.
+    - No Visibility: Unable to verify implementation due to lack of evidence or access.
+    - Not Applicable: Control is irrelevant to the system’s scope or architecture.
 """
 
 import asyncio
