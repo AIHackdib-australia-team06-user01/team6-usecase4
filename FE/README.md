@@ -37,3 +37,22 @@ npm run build
 ```sh
 npm run lint
 ```
+
+
+## Docker Instructions
+
+You can build and run the frontend using Docker:
+
+### Build the Docker image
+
+```sh
+docker build -t fe-app .
+```
+
+### Run the Docker container
+
+```sh
+docker run -p 80:80 fe-app
+```
+
+The frontend will be available at [http://localhost](http://localhost).
