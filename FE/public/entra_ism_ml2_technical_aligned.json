@@ -1,0 +1,267 @@
+{  "Entra": [
+  {
+    "ControlID":"ISM-1650",
+    "Description":"Privileged user account and security group management events are centrally logged.",
+    "Section":"Access to systems and their resources",
+    "Topic":"Privileged access to systems",
+    "AlignedTopics":"Groups (RBAC\/Privileged Access Groups)",
+    "BlueprintArea":"Groups"
+  },
+  {
+    "ControlID":"ISM-0445",
+    "Description":"Privileged users are assigned a dedicated privileged user account to be used solely for duties requiring privileged access.",
+    "Section":"Access to systems and their resources",
+    "Topic":"Privileged access to systems",
+    "AlignedTopics":"Identity Governance (PIM, Access Reviews, Entitlement Mgmt)",
+    "BlueprintArea":"Identity Governance"
+  },
+  {
+    "ControlID":"ISM-1173",
+    "Description":"Multi-factor authentication is used to authenticate privileged users of systems.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Identity Governance (PIM, Access Reviews, Entitlement Mgmt)",
+    "BlueprintArea":"Identity Governance"
+  },
+  {
+    "ControlID":"ISM-1175",
+    "Description":"Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services.",
+    "Section":"Access to systems and their resources",
+    "Topic":"Privileged access to systems",
+    "AlignedTopics":"Identity Governance (PIM, Access Reviews, Entitlement Mgmt)",
+    "BlueprintArea":"Identity Governance"
+  },
+  {
+    "ControlID":"ISM-1650",
+    "Description":"Privileged user account and security group management events are centrally logged.",
+    "Section":"Access to systems and their resources",
+    "Topic":"Privileged access to systems",
+    "AlignedTopics":"Identity Governance (PIM, Access Reviews, Entitlement Mgmt)",
+    "BlueprintArea":"Identity Governance"
+  },
+  {
+    "ControlID":"ISM-1883",
+    "Description":"Privileged user accounts explicitly authorised to access online services are strictly limited to only what is required for users and services to undertake their duties.",
+    "Section":"Access to systems and their resources",
+    "Topic":"Privileged access to systems",
+    "AlignedTopics":"Identity Governance (PIM, Access Reviews, Entitlement Mgmt)",
+    "BlueprintArea":"Identity Governance"
+  },
+  {
+    "ControlID":"ISM-1173",
+    "Description":"Multi-factor authentication is used to authenticate privileged users of systems.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods); Identity Governance (PIM, Access Reviews, Entitlement Mgmt)",
+    "BlueprintArea":"Protection"
+  },
+  {
+    "ControlID":"ISM-1228",
+    "Description":"Cybersecurity events are analysed in a timely manner to identify cybersecurity incidents.",
+    "Section":"Event logging and monitoring",
+    "Topic":"Event log monitoring",
+    "AlignedTopics":"Logging & Monitoring (Sign-in\/Audit logs to SIEM)",
+    "BlueprintArea":"Protection"
+  },
+  {
+    "ControlID":"ISM-1815",
+    "Description":"Event logs are protected from unauthorised modification and deletion.",
+    "Section":"Event logging and monitoring",
+    "Topic":"Centralised event logging facility",
+    "AlignedTopics":"Logging & Monitoring (Sign-in\/Audit logs to SIEM)",
+    "BlueprintArea":"Protection"
+  },
+  {
+    "ControlID":"ISM-1906",
+    "Description":"Event logs from internet-facing servers are analysed in a timely manner to detect cybersecurity events.",
+    "Section":"Event logging and monitoring",
+    "Topic":"Event log monitoring",
+    "AlignedTopics":"Logging & Monitoring (Sign-in\/Audit logs to SIEM)",
+    "BlueprintArea":"Protection"
+  },
+  {
+    "ControlID":"ISM-0974",
+    "Description":"Multi-factor authentication is used to authenticate unprivileged users of systems.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-0974",
+    "Description":"Multi-factor authentication is used to authenticate unprivileged users of systems.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1173",
+    "Description":"Multi-factor authentication is used to authenticate privileged users of systems.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1401",
+    "Description":"Multi-factor authentication uses either: something users have and something users know, or something users have that is unlocked by something users know or are.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1401",
+    "Description":"Multi-factor authentication uses either: something users have and something users know, or something users have that is unlocked by something users know or are.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1504",
+    "Description":"Multi-factor authentication is used to authenticate users to their organisation’s online services that process, store or communicate their organisation’s sensitive data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1504",
+    "Description":"Multi-factor authentication is used to authenticate users to their organisation’s online services that process, store or communicate their organisation’s sensitive data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1679",
+    "Description":"Multi-factor authentication is used to authenticate users to third-party online services that process, store or communicate their organisation’s sensitive data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1679",
+    "Description":"Multi-factor authentication is used to authenticate users to third-party online services that process, store or communicate their organisation’s sensitive data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1680",
+    "Description":"Multi-factor authentication (where available) is used to authenticate users to third-party online services that process, store or communicate their organisation’s non-sensitive data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1680",
+    "Description":"Multi-factor authentication (where available) is used to authenticate users to third-party online services that process, store or communicate their organisation’s non-sensitive data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1681",
+    "Description":"Multi-factor authentication is used to authenticate customers to online customer services that process, store or communicate sensitive customer data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1681",
+    "Description":"Multi-factor authentication is used to authenticate customers to online customer services that process, store or communicate sensitive customer data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1682",
+    "Description":"Multi-factor authentication used for authenticating users of systems is phishing-resistant.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1682",
+    "Description":"Multi-factor authentication used for authenticating users of systems is phishing-resistant.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1683",
+    "Description":"Successful and unsuccessful multi-factor authentication events are centrally logged.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1683",
+    "Description":"Successful and unsuccessful multi-factor authentication events are centrally logged.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1872",
+    "Description":"Multi-factor authentication used for authenticating users of online services is phishing-resistant.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1872",
+    "Description":"Multi-factor authentication used for authenticating users of online services is phishing-resistant.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1892",
+    "Description":"Multi-factor authentication is used to authenticate users to their organisation’s online customer services that process, store or communicate their organisation’s sensitive customer data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1892",
+    "Description":"Multi-factor authentication is used to authenticate users to their organisation’s online customer services that process, store or communicate their organisation’s sensitive customer data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1893",
+    "Description":"Multi-factor authentication is used to authenticate users to third-party online customer services that process, store or communicate their organisation’s sensitive customer data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  },
+  {
+    "ControlID":"ISM-1893",
+    "Description":"Multi-factor authentication is used to authenticate users to third-party online customer services that process, store or communicate their organisation’s sensitive customer data.",
+    "Section":"Authentication hardening",
+    "Topic":"Multi-factor authentication",
+    "AlignedTopics":"Users (MFA\/SSPR\/Auth methods)",
+    "BlueprintArea":"Users"
+  }
+  ]
+}
