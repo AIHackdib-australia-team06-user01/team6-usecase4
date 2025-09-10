@@ -36,7 +36,9 @@ from dataclasses import dataclass
 from autogen_agentchat.agents import AssistantAgent
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
 from pydantic import BaseModel
-
+from autogen_core import CancellationToken
+from autogen_agentchat.agents import UserProxyAgent
+from autogen_agentchat.messages import TextMessage
 
 @dataclass
 class Policy:
@@ -207,23 +209,16 @@ class ISMControlAssessor:
         }}
         """
         
+        parsed_response = AgentResponseJSON(status="Not Assessed", relevant_policies=[], explanation="No response")
         try:
             print("Debug: Starting to process agent response stream")
             # Await the streamed response from the agent
-            response_stream = self.agent.run_stream(task=prompt)
-
-            final_response = None
-            async for chunk in response_stream:
-                final_response = chunk  # The last item is the final response
-
-            parsed_response: AgentResponseJSON = AgentResponseJSON(
-                status="Not Assessed", 
-                relevant_policies=[], 
-                explanation=""
+            final_response = await asyncio.create_task(
+                self.agent.on_messages([TextMessage(content=prompt, source="user")],cancellation_token=CancellationToken())
             )
             # If final_response is a Response object, get the chat_message/content
             if hasattr(final_response, "chat_message"):
-                content = getattr(getattr(final_response, "chat_message", None), "content", None)
+                content = dict(final_response.chat_message)["content"]
                 if isinstance(content, dict):
                     parsed_response = AgentResponseJSON(**content)
                 elif isinstance(content, str):

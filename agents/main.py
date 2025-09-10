@@ -13,8 +13,8 @@ def main():
         description = ism[key]["Description"]
         # Agent request
         result = run_assessment(ism, description)
-        exit() # TESTING, run once
         print(f"Assessment for ISM {ism}: {result}")
+        exit() # TESTING, run once
 
 
 if __name__ == "__main__":
