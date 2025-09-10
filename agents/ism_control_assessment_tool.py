@@ -29,14 +29,13 @@ Implementation Statuses:
 """
 
 import asyncio
-import re
 import os
 import json
 from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
 from autogen_agentchat.agents import AssistantAgent
-from autogen_agentchat.ui import Console
 from autogen_ext.models.openai import AzureOpenAIChatCompletionClient
+from pydantic import BaseModel
 
 
 @dataclass
@@ -45,14 +44,26 @@ class Policy:
     description: str
     settings: Dict[str, str]
 
+
+class AgentResponseJSON(BaseModel):
+ status: str
+ # list of policy names that address this control
+ relevant_policies: List[str]
+ # "Brief explanation of assessment reasoning and any gaps identified"
+ explanation: str
+
 class ISMControlAssessor:
-    def __init__(self, policy_file_path: str, api_key: Optional[str] = None):
+    def __init__(self, policy_file_path: str, api_key: Optional[str] = None,
+                 azure_endpoint: Optional[str] = None,
+                 azure_deployment: Optional[str] = "gpt-5-mini"):
         """
         Initialize the ISM Control Assessor.
         
         Args:
             policy_file_path: Path to the DSC policy file
             api_key: Optional API key for Azure OpenAI. If not provided, will use OPENAI_API_KEY env var
+            azure_endpoint: Optional Azure OpenAI endpoint. If not provided, will use default
+            azure_deployment: Optional Azure deployment name. Defaults to gpt-5-mini
             
         Raises:
             ValueError: If no API key is provided or found in environment
@@ -65,28 +76,40 @@ class ISMControlAssessor:
         ]
         self.model_client: Optional[AzureOpenAIChatCompletionClient] = None
         self.agent: Optional[AssistantAgent] = None
-        # self.policies: List[Policy] = []
         self.policies: str = ""
         
-        api_key = api_key or os.getenv('OPENAI_API_KEY')
-        if not api_key:
+        # Get configuration from parameters or environment
+        self._api_key = api_key or os.getenv('OPENAI_API_KEY')
+        if not self._api_key:
             raise ValueError("API key must be provided either through constructor or OPENAI_API_KEY environment variable")
-        self._api_key: str = api_key
+            
+        self._azure_endpoint = azure_endpoint or os.getenv('AZURE_OPENAI_ENDPOINT') or "https://aihac-mfbwdeld-eastus2.cognitiveservices.azure.com/"
+        self._azure_deployment = azure_deployment
+        
+        # Load policies immediately
+        self.load_policies()
         
     async def initialize(self):
         """Initialize the assessor asynchronously."""
         try:
-        #     # Load policies first
-        #     # self.policies = await self._load_policies()
-        #     self.policies = str(self._read_file("utf-8"))
             
             # Initialize Azure OpenAI client
+            if not self._api_key:
+                raise ValueError("API key is required")
+            
+            if not self._azure_deployment:
+                raise ValueError("Azure deployment name is required")
+                
+            if not self._azure_endpoint:
+                raise ValueError("Azure endpoint is required")
+                
             self.model_client = AzureOpenAIChatCompletionClient(
-                azure_deployment="gpt-5-mini",
-                model="gpt-5-mini",
+                azure_deployment=str(self._azure_deployment),
+                model=str(self._azure_deployment),
                 api_version="2024-12-01-preview",
-                azure_endpoint="https://aihac-mfbwdeld-eastus2.cognitiveservices.azure.com/",
-                api_key=self._api_key,
+                azure_endpoint=str(self._azure_endpoint),
+                api_key=str(self._api_key),
+                response_format=AgentResponseJSON   
             )
             
             # Initialize the agent
@@ -97,8 +120,6 @@ class ISMControlAssessor:
                 model_client_stream=True,
             )
             
-        #     # Test the connection
-        #     await Console(self.agent.run_stream(task="test"))
         except Exception as e:
             await self.cleanup()
             raise RuntimeError(f"Failed to initialize Azure OpenAI connection: {str(e)}")
@@ -111,59 +132,18 @@ class ISMControlAssessor:
             except Exception:
                 pass  # Best effort cleanup
 
-    # async def _load_policies(self) -> List[Policy]:
-    #     """Load and parse policies from the DSC configuration file asynchronously."""
-    #     policies = []
-    #     encodings = ['utf-8', 'utf-16', 'latin-1', 'cp1252']
-    #     content = None
-
-    #     # Use asyncio.to_thread for file I/O to prevent blocking
-    #     for encoding in encodings:
-    #         try:
-    #             content = await asyncio.to_thread(self._read_file, encoding)
-    #             if content is not None:
-    #                 break
-    #         except UnicodeDecodeError:
-    #             continue
-
-    #     if content is None:
-    #         raise ValueError(f"Could not read file with any of the attempted encodings: {encodings}")
-
-    #     try:
-    #         # Process the content
-    #         return await asyncio.to_thread(self._parse_policies, content)
-    #     except Exception as e:
-    #         print(f"Error loading policies: {str(e)}")
-    #         return []
-
-    def _read_file(self, encoding: str) -> Optional[str]:
-        """Helper method to read file with given encoding."""
-        try:
-            with open(self.policy_file_path, 'r', encoding=encoding) as f:
-                return f.read()
-        except UnicodeDecodeError:
-            return None
-
-    # def _parse_policies(self, content: str) -> List[Policy]:
-    #     """Helper method to parse policies from content."""
-    #     policies = []
-    #     # Extract policy configurations using regex
-    #     config_blocks = re.findall(r'(?s)(\w+)\s*{[^{]*?(?:{[^}]*}[^{]*)*}', content)
+    def load_policies(self) -> None:
+        """Load policies from the policy file.
         
-    #     for block in config_blocks:
-    #         if block.strip() and not block.startswith(('Configuration', 'param')):
-    #             # Parse settings within the block
-    #             settings = {}
-    #             settings_match = re.findall(r'(\w+)\s*=\s*["\']([^"\']*)["\']', block)
-    #             for key, value in settings_match:
-    #                 settings[key] = value
-                
-    #             policies.append(Policy(
-    #                 name=block.split('{')[0].strip(),
-    #                 description=settings.get('Description', ''),
-    #                 settings=settings
-    #             ))
-    #     return policies
+        Raises:
+            RuntimeError: If policy file cannot be loaded
+        """
+        try:
+            with open(self.policy_file_path, 'r', encoding='utf-16') as f:
+                self.policies = f.read()
+        except Exception as e:
+            raise RuntimeError(f"Failed to load policy file: {str(e)}")
+
 
     async def assess_control(self, ism_title: str, ism_description: str) -> Tuple[str, List[str]]:
         """
@@ -187,12 +167,6 @@ class ISMControlAssessor:
                     
         if not self.policies:
             return "Not Assessed", []
-            
-        # Prepare context for LLM
-        # policies_context = "\n".join([
-        #     f"Policy: {p.name}\nDescription: {p.description}\nSettings: {p.settings}"
-        #     for p in self.policies
-        # ])
 
         # Build a precise prompt with clear instructions
         prompt = f"""
@@ -220,26 +194,46 @@ class ISMControlAssessor:
         """
         
         try:
-            # Process the stream and get final result
-            last_event = None
-            async for event in self.agent.run_stream(task=prompt):
-                last_event = event
-                
-            if not last_event:
+            # Process the stream and accumulate the response
+            response_chunks = []
+            try:
+                from autogen_agentchat.messages import TextMessage
+                async for event in self.agent.run_stream(task=prompt):
+                    if isinstance(event, TextMessage):
+                        if event.content and event.content.strip():
+                            response_chunks.append(event.content)
+                    elif isinstance(event, dict) and 'content' in event and event['content']:
+                        response_chunks.append(event['content'])
+                    elif isinstance(event, str) and event.strip():
+                        response_chunks.append(event)
+
+            except Exception as e:
+                print(f"Error during stream processing: {str(e)}")
+                raise
+                    
+            if not response_chunks:
+                print("Debug: No chunks collected")  # Debug print
                 raise ValueError("No response received from agent")
 
-            # Try to extract content from the event
-            response_content = None
-            if isinstance(last_event, dict):
-                response_content = last_event.get('content')
-            elif isinstance(last_event, str):
-                response_content = last_event
-
+            # Combine all chunks into a complete response
+            response_content = ' '.join(response_chunks)
+            print(f"Debug: Full response: {response_content}")  # Debug print
+            
             if not response_content:
                 raise ValueError("No valid response content received from agent")
 
+            # Find the JSON content within the response
+            # Look for content between curly braces as the response might include additional text
+            start_idx = response_content.find('{')
+            end_idx = response_content.rfind('}')
+            
+            if start_idx == -1 or end_idx == -1:
+                raise ValueError("No valid JSON found in response")
+                
+            json_content = response_content[start_idx:end_idx + 1]
+            
             # Parse and validate the response
-            result = json.loads(response_content)
+            result = json.loads(json_content)
             
             if "status" not in result or "relevant_policies" not in result:
                 raise ValueError("Missing required fields in API response")

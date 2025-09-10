@@ -13,7 +13,7 @@ def main():
         description = ism[key]["Description"]
         # Agent request
         result = run_assessment(ism, description)
-        exit()
+        exit() # TESTING, run once
         print(f"Assessment for ISM {ism}: {result}")
 
 
