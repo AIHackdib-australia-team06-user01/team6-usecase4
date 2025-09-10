@@ -198,20 +198,27 @@ function selectAllCategory(category: string, controls: Control[]) {
           :key="control.ControlID"
           class="flex items-center px-2 py-1 transition-all duration-200 ease-in-out relative group hover:bg-gray-100 dark:hover:bg-gray-800 hover:py-3"
         >
-          <input
-            type="checkbox"
-            class="form-checkbox h-4 w-4 text-blue-600 mr-2"
-            :id="category + '-' + control.ControlID"
-            :checked="selectedControls.has(control.ControlID)"
-            @change="toggleControlSelection(control.ControlID)"
-          />
-          <label :for="category + '-' + control.ControlID" class="font-semibold text-gray-800 dark:text-gray-100 cursor-pointer flex flex-col text-sm">
-            <span>{{ control.ControlID }}</span>
-            <span
-              class="text-gray-600 dark:text-gray-300 text-xs mt-0.5 max-w-xl transition-all duration-200 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-32 overflow-hidden"
-            >
-              {{ control.Description }}
-            </span>
+          <label
+            :for="category + '-' + control.ControlID"
+            class="font-semibold text-gray-800 dark:text-gray-100 cursor-pointer flex flex-row items-center gap-3 text-sm py-2 px-2 rounded hover:bg-blue-50 dark:hover:bg-blue-900 transition-all w-full"
+            style="user-select: none;"
+          >
+            <input
+              type="checkbox"
+              class="form-checkbox h-5 w-5 text-blue-600 mr-2 cursor-pointer"
+              :id="category + '-' + control.ControlID"
+              :checked="selectedControls.has(control.ControlID)"
+              @change="toggleControlSelection(control.ControlID)"
+              tabindex="0"
+            />
+            <div class="flex flex-col">
+              <span>{{ control.ControlID }}</span>
+              <span
+                class="text-gray-600 dark:text-gray-300 text-xs mt-0.5 max-w-xl transition-all duration-200 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-32 overflow-hidden"
+              >
+                {{ control.Description }}
+              </span>
+            </div>
           </label>
         </li>
       </ul>
