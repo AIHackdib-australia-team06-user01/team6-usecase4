@@ -46,11 +46,24 @@ class Policy:
 
 
 class AgentResponseJSON(BaseModel):
- status: str
- # list of policy names that address this control
- relevant_policies: List[str]
- # "Brief explanation of assessment reasoning and any gaps identified"
- explanation: str
+    """Structured response format for the security assessment agent."""
+    status: str
+    relevant_policies: List[str]
+    explanation: str
+
+    class Config:
+        """Pydantic model configuration."""
+        allow_extra = False  # Prevent additional fields
+        
+    @property
+    def is_valid_status(self) -> bool:
+        """Check if status is one of the valid implementation statuses."""
+        valid_statuses = [
+            "Not Assessed", "Effective", "Alternate control",
+            "not implemented", "implemented", "ineffective",
+            "no usability", "not applicable"
+        ]
+        return self.status in valid_statuses
 
 class ISMControlAssessor:
     def __init__(self, policy_file_path: str, api_key: Optional[str] = None,
@@ -109,7 +122,7 @@ class ISMControlAssessor:
                 api_version="2024-12-01-preview",
                 azure_endpoint=str(self._azure_endpoint),
                 api_key=str(self._api_key),
-                response_format=AgentResponseJSON   
+                temperature=1, 
             )
             
             # Initialize the agent
@@ -118,6 +131,7 @@ class ISMControlAssessor:
                 model_client=self.model_client,
                 system_message="You are a security policy assessment expert. Provide precise, evidence-based evaluations.",
                 model_client_stream=True,
+                output_content_type=AgentResponseJSON,  
             )
             
         except Exception as e:
@@ -188,63 +202,40 @@ class ISMControlAssessor:
         Response Format (JSON):
         {{
             "status": "one of: {', '.join(self.implementation_statuses)}",
-            "relevant_policies": ["list of policy names that address this control"],
+            "relevant_policies": ["list of policy titles that address this control"],
             "explanation": "Brief explanation of assessment reasoning and any gaps identified"
         }}
         """
         
         try:
-            # Process the stream and accumulate the response
-            response_chunks = []
-            try:
-                from autogen_agentchat.messages import TextMessage
-                async for event in self.agent.run_stream(task=prompt):
-                    if isinstance(event, TextMessage):
-                        if event.content and event.content.strip():
-                            response_chunks.append(event.content)
-                    elif isinstance(event, dict) and 'content' in event and event['content']:
-                        response_chunks.append(event['content'])
-                    elif isinstance(event, str) and event.strip():
-                        response_chunks.append(event)
+            print("Debug: Starting to process agent response stream")
+            # Await the streamed response from the agent
+            response_stream = self.agent.run_stream(task=prompt)
 
-            except Exception as e:
-                print(f"Error during stream processing: {str(e)}")
-                raise
-                    
-            if not response_chunks:
-                print("Debug: No chunks collected")  # Debug print
-                raise ValueError("No response received from agent")
+            final_response = None
+            async for chunk in response_stream:
+                final_response = chunk  # The last item is the final response
 
-            # Combine all chunks into a complete response
-            response_content = ' '.join(response_chunks)
-            print(f"Debug: Full response: {response_content}")  # Debug print
-            
-            if not response_content:
-                raise ValueError("No valid response content received from agent")
+            parsed_response: AgentResponseJSON = AgentResponseJSON(
+                status="Not Assessed", 
+                relevant_policies=[], 
+                explanation=""
+            )
+            # If final_response is a Response object, get the chat_message/content
+            if hasattr(final_response, "chat_message"):
+                content = getattr(getattr(final_response, "chat_message", None), "content", None)
+                if isinstance(content, dict):
+                    parsed_response = AgentResponseJSON(**content)
+                elif isinstance(content, str):
+                    parsed_response = AgentResponseJSON.model_validate_json(content)
+                else:
+                    pass
+            else:
+                pass
 
-            # Find the JSON content within the response
-            # Look for content between curly braces as the response might include additional text
-            start_idx = response_content.find('{')
-            end_idx = response_content.rfind('}')
-            
-            if start_idx == -1 or end_idx == -1:
-                raise ValueError("No valid JSON found in response")
-                
-            json_content = response_content[start_idx:end_idx + 1]
-            
-            # Parse and validate the response
-            result = json.loads(json_content)
-            
-            if "status" not in result or "relevant_policies" not in result:
-                raise ValueError("Missing required fields in API response")
-                
-            if result["status"] not in self.implementation_statuses:
-                raise ValueError(f"Invalid status: {result['status']}")
-                
-            return result["status"], result["relevant_policies"]
-            
-        except json.JSONDecodeError as e:
-            print(f"Failed to parse LLM response: {e}")
+            return parsed_response.status, parsed_response.relevant_policies
+        except json.JSONDecodeError:
+            print("JSON decode error")
             return "Not Assessed", []
         except (ValueError, KeyError) as e:
             print(f"Invalid LLM response format: {e}")
