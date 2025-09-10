@@ -141,3 +141,4 @@ be-venv/pyvenv.cfg
 be-venv/bin/**
 be/be-venv/**
 be/output/**
+agents/agent-venv/**

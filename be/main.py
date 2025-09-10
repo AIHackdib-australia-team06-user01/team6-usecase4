@@ -6,7 +6,9 @@ from fastapi.responses import FileResponse
 import os
 from ssp_excel_updater import update_ssp_excel
 from ism_description_svc import get_ism_description
-from agents.ism_control_assessment_tool import run_assessment
+import sys
+sys.path.append('/workspaces/team6-usecase4')
+from agents.ism_control_assessment_tool import assess_ism_control
 
 
 app = FastAPI()
@@ -46,11 +48,20 @@ async def process_strings(string_list: StringList):
 
     for ism in string_list.items:
         desc = get_ism_description(ism)
-        result.append(run_assessment(
-            ism_title=ism,
-            ism_description=desc,
-            policy_file="./data/asdbpsc-dsc-entra.txt"
-        ))
+        try:
+            
+            status, policies = await assess_ism_control(
+                ism_title=ism,
+                ism_description=desc,
+                policy_file="./data/asdbpsc-dsc-entra.txt"
+            )
+            result = {"ism-control": ism, "result": status, "comment": ", ".join(policies)}
+            results.append(result)
+            print(f"Assessment for ISM {ism}: {result}")
+        except Exception as e:
+            print(f"Error assessing ISM {ism}: {str(e)}")
+            result = {"ism-control": ism, "result": "Not Assessed", "comment": f"Error: {str(e)}"}
+            results.append(result)
 
 
     filename = get_output_filename()
