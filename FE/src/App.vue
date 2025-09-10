@@ -34,7 +34,9 @@ function toggleControlSelection(controlID: string) {
   // Force reactivity for Set
   selectedControls.value = new Set(selectedControls.value);
 }
-
+function deselectAll() {
+  selectedControls.value = new Set();
+}
 // Mock service to simulate API call
 const isLoading = ref(false)
 async function runService() {
@@ -65,7 +67,7 @@ async function runService() {
             </li>
           </ul>
           <button
-            @click="selectedControls.clear(); selectedControls.value = new Set()"
+            @click="deselectAll()"
             class="mt-2 px-2 py-0.5 text-xs bg-red-100 dark:bg-red-900 text-red-700 dark:text-red-200 rounded hover:bg-red-200 dark:hover:bg-red-800 transition"
           >
             Deselect All
@@ -91,7 +93,7 @@ async function runService() {
     <div v-for="(controls, category) in controlsData" :key="category" class="mb-4">
       <button
         class="w-full text-left px-4 py-2 bg-gray-800 text-white rounded shadow hover:bg-gray-700 focus:outline-none flex items-center justify-between"
-        @click="toggleCategory(category)"
+        @click="toggleCategory(String(category))"
       >
         <div class="flex items-center">
           <span class="font-bold text-lg">{{ category }}</span>
