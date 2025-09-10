@@ -86,7 +86,7 @@ docker build -t fastapi-app .
 
 2. Run the container:
 ```bash
-docker run -p 8000:8000 fastapi-app
+docker run --env-file .env -p 8000:8000 fastapi-app
 ```
 
 ## API Documentation

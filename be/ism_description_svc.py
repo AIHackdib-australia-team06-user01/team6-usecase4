@@ -12,7 +12,7 @@ def get_ism_description(ism_key: str, data_path: Optional[str] = None) -> Option
         The description string if found, else None.
     """
     if data_path is None:
-        data_path = os.path.join(os.path.dirname(__file__), "../data/data.json")
+        data_path = os.path.join(os.path.dirname(__file__), "./data/data.json")
     with open(data_path, "r") as f:
         data = json.load(f)
     for ism in data:
