@@ -1,0 +1,5 @@
+[
+  {"ism-control": "ISM-001", "result": "Compliant", "comment": "Meets all requirements."},
+  {"ism-control": "ISM-002", "result": "Non-Compliant", "comment": "Missing documentation."},
+  {"ism-control": "ISM-003", "result": "Partially Compliant", "comment": "Some controls in place."}
+]
