@@ -98,8 +98,8 @@ function selectAllCategory(category: string, controls: Control[]) {
 
 <template>
   <div class="p-4">
-    <header class="text-left mt-8 mb-6">
-      <h1 class="text-3xl font-extrabold text-blue-700 dark:text-blue-400 tracking-tight">DISPruptor</h1>
+    <header class="text-left mt-8 mb-6 flex flex-col items-start">
+      <img src="/logo.png" alt="DISPruptor Logo" class="h-24 w-auto mb-2" style="max-width: 320px;" />
       <p class="text-base text-gray-500 dark:text-gray-300 mt-1">made by Team BluePrint</p>
     </header>
     <div v-if="showResults" class="flex flex-col items-center justify-center gap-4 mb-6">
