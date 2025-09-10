@@ -50,12 +50,12 @@ async def process_strings(string_list: StringList):
         desc = get_ism_description(ism)
         try:
             
-            status, policies = await assess_ism_control(
+            status, policies, explaination = await assess_ism_control(
                 ism_title=ism,
                 ism_description=desc,
                 policy_file="./data/asdbpsc-dsc-entra.txt"
             )
-            result = {"ism-control": ism, "result": status, "comment": ", ".join(policies)}
+            result = {"ism-control": ism, "result": status, "explaination": explaination, "comment": ", ".join(policies)}
             results.append(result)
             print(f"Assessment for ISM {ism}: {result}")
         except Exception as e:
@@ -66,7 +66,7 @@ async def process_strings(string_list: StringList):
 
     filename = get_output_filename()
     output_path = get_output_path(filename)
-    update_ssp_excel(json_path, excel_path, output_path)
+    update_ssp_excel(results, excel_path, output_path)
     return {"output_file": filename, "assessments": results}
 
 
