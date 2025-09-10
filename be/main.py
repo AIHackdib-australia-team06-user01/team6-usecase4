@@ -1,3 +1,6 @@
+import datetime
+import sys
+
 from fastapi import FastAPI, Response
 from fastapi.middleware.cors import CORSMiddleware
 from typing import List
@@ -6,8 +9,6 @@ from fastapi.responses import FileResponse
 import os
 from ssp_excel_updater import update_ssp_excel
 from ism_description_svc import get_ism_description
-import sys
-sys.path.append('/workspaces/team6-usecase4')
 from agents.ism_control_assessment_tool import assess_ism_control
 
 
@@ -24,7 +25,7 @@ app.add_middleware(
 
 # Example usage paths (update as needed)
 
-import datetime
+
 json_path = "./data/results.json"
 excel_path = "./data/Blueprint-System-Security-Plan-Annex-Template-(June 2025).xlsx"
 

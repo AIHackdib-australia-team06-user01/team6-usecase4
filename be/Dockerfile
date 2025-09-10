@@ -1,5 +1,5 @@
 # Use an official Python runtime as the parent image
-FROM python:3.9-slim
+FROM python:3.12-slim
 
 # Set the working directory in the container
 WORKDIR /app
@@ -11,10 +11,10 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Copy the application code into the container
-COPY main.py .
+COPY . .
 
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
 # Run the application when the container launches
-CMD ["python", "main.py"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
