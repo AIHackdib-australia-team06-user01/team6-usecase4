@@ -20,7 +20,10 @@ def update_ssp_excel(json_path: str, excel_path: str, output_path: str) -> None:
 
     # Load Excel workbook
     wb = openpyxl.load_workbook(excel_path)
-    ws = wb.active
+    try:
+        ws = wb['Essential Eight']
+    except KeyError:
+        raise ValueError("Worksheet 'Essential Eight' not found in the Excel file")
 
     # Iterate through rows and update columns L and M
     for row in ws.iter_rows(min_row=2):  # Assuming first row is header

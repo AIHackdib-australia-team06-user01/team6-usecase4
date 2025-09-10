@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from typing import List
 from pydantic import BaseModel
 import os
-from .ssp_excel_updater import update_ssp_excel
+from ssp_excel_updater import update_ssp_excel
 
 app = FastAPI()
 

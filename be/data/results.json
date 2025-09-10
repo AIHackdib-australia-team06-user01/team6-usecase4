@@ -1,5 +1,5 @@
 [
-  {"ism-control": "ISM-001", "result": "Compliant", "comment": "Meets all requirements."},
-  {"ism-control": "ISM-002", "result": "Non-Compliant", "comment": "Missing documentation."},
-  {"ism-control": "ISM-003", "result": "Partially Compliant", "comment": "Some controls in place."}
+  {"ism-control": "ISM-1807", "result": "Compliant", "comment": "Meets all requirements."},
+  {"ism-control": "ISM-1808", "result": "Non-Compliant", "comment": "Missing documentation."},
+  {"ism-control": "ISM-1698", "result": "Partially Compliant", "comment": "Some controls in place."}
 ]
