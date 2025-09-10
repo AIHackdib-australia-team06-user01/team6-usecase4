@@ -13,8 +13,10 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the application code into the container
 COPY . .
 
+ENV OPENAI_API_KEY=""
+ENV AZURE_ENDPOINT=""
 # Make port 8000 available to the world outside this container
 EXPOSE 8000
 
 # Run the application when the container launches
-CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["python", "main.py"]
