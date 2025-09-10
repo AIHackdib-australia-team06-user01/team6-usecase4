@@ -1,10 +1,41 @@
-# Sub agent (autogen) that receives ism title and description and asdbpsc-dsc-entra.txt
-# It then checks to see if ism is being met by policies asdbpsc-dsc-entra.txt
-# output implementation status: ["Not Assessed" , "Effective",  "Alternate control", "not implemented", "implemented", "ineffective", "no usability", "not applicable"] , Policies: [list of policies]
+"""
+ISM Control Assessment Tool
+
+This module provides functionality to assess Information Security Manual (ISM) controls
+against a set of Microsoft 365 DSC policies using OpenAI's LLM capabilities.
+
+The tool analyzes policy compliance and provides implementation status along with
+relevant policy matches.
+
+Requirements:
+    - Python 3.8+
+    - UV package manager for dependency management
+    - OpenAI API key set in environment variable OPENAI_API_KEY
+
+Setup:
+    1. Create virtual environment: uv venv
+    2. Activate: source .venv/bin/activate
+    3. Install deps: uv pip install -r pyproject.toml
+
+Implementation Statuses:
+    - Not Assessed: Control has not been evaluated
+    - Effective: Control is fully implemented and effective
+    - Alternate control: Different but acceptable control is in place
+    - Not implemented: Control is missing
+    - Implemented: Control is in place but may need review
+    - Ineffective: Control exists but doesn't meet requirements
+    - No usability: Control cannot be implemented as specified
+    - Not applicable: Control is not relevant to the environment
+"""
 
 import re
-from typing import List, Dict, Tuple
+import os
+import json
+from typing import List, Dict, Tuple, Optional
 from dataclasses import dataclass
+
+from autogen import OpenAIWrapper, config_list_from_json
+from autogen.oai.openai_api import OpenAIError
 
 @dataclass
 class Policy:
@@ -13,7 +44,7 @@ class Policy:
     settings: Dict[str, str]
 
 class ISMControlAssessor:
-    def __init__(self, policy_file_path: str):
+    def __init__(self, policy_file_path: str, config_path: Optional[str] = None):
         self.policy_file_path = policy_file_path
         self.implementation_statuses = [
             "Not Assessed", "Effective", "Alternate control", 
@@ -21,6 +52,20 @@ class ISMControlAssessor:
             "no usability", "not applicable"
         ]
         self.policies = self._load_policies()
+        
+        # Initialize OpenAI configuration
+        if config_path and os.path.exists(config_path):
+            config_list = config_list_from_json(config_path)
+        else:
+            # Default configuration using environment variable
+            config_list = [
+                {
+                    'model': 'gpt-4',
+                    'api_key': os.getenv('OPENAI_API_KEY'),
+                }
+            ]
+        
+        self.llm = OpenAIWrapper(config_list=config_list)
 
     def _load_policies(self) -> List[Policy]:
         """Load and parse policies from the DSC configuration file."""
@@ -52,67 +97,93 @@ class ISMControlAssessor:
 
     def assess_control(self, ism_title: str, ism_description: str) -> Tuple[str, List[str]]:
         """
-        Assess if an ISM control is being met by the policies.
+        Assess if an ISM control is being met by the policies using LLM.
         
         Args:
-            ism_title: The title of the ISM control
-            ism_description: The description of the ISM control
+            ism_title: The title of the ISM control to assess
+            ism_description: The description of the control requirements
             
         Returns:
-            Tuple containing:
-            - implementation status
-            - list of relevant policy names
+            Tuple[str, List[str]]: A tuple containing:
+                - implementation status (one of the predefined statuses)
+                - list of relevant policy names that address the control
+                
+        Raises:
+            ValueError: If the LLM response is not in the expected format
+            OpenAIError: If there's an issue with the OpenAI API call
         """
-        relevant_policies = []
-        keywords = self._extract_keywords(ism_title, ism_description)
+        if not self.policies:
+            return "Not Assessed", []
+            
+        # Prepare context for LLM
+        policies_context = "\n".join([
+            f"Policy: {p.name}\nDescription: {p.description}\nSettings: {p.settings}"
+            for p in self.policies
+        ])
         
-        # Search for relevant policies based on keywords
-        for policy in self.policies:
-            policy_text = f"{policy.name} {policy.description} {' '.join(policy.settings.values())}"
-            if any(keyword.lower() in policy_text.lower() for keyword in keywords):
-                relevant_policies.append(policy.name)
+        # Build a precise prompt with clear instructions
+        prompt = f"""
+        Task: Analyze if the following ISM (Information Security Manual) control is adequately addressed by the provided policies.
         
-        # Determine implementation status based on findings
-        status = self._determine_status(relevant_policies, keywords)
+        ISM Control:
+        Title: {ism_title}
+        Description: {ism_description}
         
-        return status, relevant_policies
-
-    def _extract_keywords(self, title: str, description: str) -> List[str]:
-        """Extract important keywords from the ISM control title and description."""
-        # Combine title and description
-        text = f"{title} {description}"
+        Available Policies:
+        {policies_context}
         
-        # Remove common words and split into keywords
-        common_words = {'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for', 'of', 'with'}
-        keywords = [word for word in text.split() 
-                   if word.lower() not in common_words and len(word) > 2]
+        Assessment Criteria:
+        1. Coverage - Do the policies fully address the control requirements?
+        2. Implementation - Are the policy settings specific and actionable?
+        3. Effectiveness - Do the policies provide adequate security measures?
+        4. Gaps - Are there any missing elements or concerns?
         
-        return keywords
-
-    def _determine_status(self, relevant_policies: List[str], keywords: List[str]) -> str:
-        """Determine the implementation status based on the findings."""
-        if not relevant_policies:
-            return "Not Assessed"
+        Response Format (JSON):
+        {{
+            "status": "one of: {', '.join(self.implementation_statuses)}",
+            "relevant_policies": ["list of policy names that address this control"],
+            "explanation": "Brief explanation of assessment reasoning and any gaps identified"
+        }}
+        """
         
-        # Count how many keywords are covered by the policies
-        covered_keywords = set()
-        for policy in self.policies:
-            if policy.name in relevant_policies:
-                policy_text = f"{policy.name} {policy.description} {' '.join(policy.settings.values())}"
-                for keyword in keywords:
-                    if keyword.lower() in policy_text.lower():
-                        covered_keywords.add(keyword)
-        
-        coverage_ratio = len(covered_keywords) / len(keywords) if keywords else 0
-        
-        if coverage_ratio >= 0.8:
-            return "Effective"
-        elif coverage_ratio >= 0.5:
-            return "implemented"
-        elif coverage_ratio > 0:
-            return "ineffective"
-        else:
-            return "not implemented"
+        try:
+            # Call OpenAI API with specific parameters for reliability
+            response = self.llm.create(
+                messages=[{
+                    "role": "system",
+                    "content": "You are a security policy assessment expert. Provide precise, evidence-based evaluations."
+                }, {
+                    "role": "user",
+                    "content": prompt
+                }],
+                response_format={"type": "json_object"},
+                temperature=0.3,  # Lower temperature for more consistent responses
+                max_tokens=1000
+            )
+            
+            if not isinstance(response.choices[0].message.content, str):
+                raise ValueError("Unexpected response format from OpenAI API")
+                
+            # Parse and validate the response
+            assessment = json.loads(response.choices[0].message.content)
+            
+            if "status" not in assessment or "relevant_policies" not in assessment:
+                raise ValueError("Missing required fields in LLM response")
+                
+            if assessment["status"] not in self.implementation_statuses:
+                raise ValueError(f"Invalid status: {assessment['status']}")
+                
+            return assessment["status"], assessment["relevant_policies"]
+            
+        except json.JSONDecodeError as e:
+            print(f"Failed to parse LLM response: {e}")
+            return "Not Assessed", []
+        except (ValueError, KeyError) as e:
+            print(f"Invalid LLM response format: {e}")
+            return "Not Assessed", []
+        except Exception as e:
+            print(f"Error during LLM assessment: {str(e)}")
+            return "Not Assessed", []
 
 def assess_ism_control(ism_title: str, ism_description: str, policy_file: str = "asdbpsc-dsc-entra.txt") -> Tuple[str, List[str]]:
     """
