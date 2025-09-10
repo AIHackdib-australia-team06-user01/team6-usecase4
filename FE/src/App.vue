@@ -2,6 +2,8 @@
 import { ref, computed } from 'vue'
 import entraData from '../public/entra_ism_ml2_technical_aligned.json'
 
+const host = 'http://localhost:8000'
+
 interface Control {
   ControlID: string;
   Description: string;
@@ -80,9 +82,27 @@ function clearResults() {
 }
 // Mock service to simulate API call
 const isLoading = ref(false)
+
 async function runService() {
   isLoading.value = true
-  await new Promise(resolve => setTimeout(resolve, 2000)) // Simulate 2s delay
+  let response = null
+  try {
+    response = await fetch(`${host}/conduct-assessment`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        controls: Array.from(selectedControls.value)
+      })
+    });
+    // Optionally handle response here if needed
+  } catch (error) {
+    console.error('API error:', error);
+  }
+
+  console.log('Service response:', response);
+
   evaluateControls()
   selectedControls.value = new Set()
   openCategory.value = null
