@@ -139,3 +139,5 @@ uv.lock
 be-venv/lib64
 be-venv/pyvenv.cfg
 be-venv/bin/**
+be/be-venv/**
+be/output/**
