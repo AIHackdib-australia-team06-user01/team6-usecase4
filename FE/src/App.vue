@@ -105,7 +105,7 @@ async function runService() {
     // Count assessments with result 'Effective', 'Not Applicable', or 'Alternate Control'
     if (data && Array.isArray(data.assessments)) {
       controlsEvaluated.value = selectedControls.value.size
-      controlsPassed.value = data.assessments.filter(a => ['effective', 'not applicable', 'alternate control'].includes(a.result?.toLowerCase())).length;
+      controlsPassed.value = data.assessments.filter((a: { result: string }) => ['effective', 'not applicable', 'alternate control'].includes(a.result?.toLowerCase())).length;
       controlsFailed.value = selectedControls.value.size - controlsPassed.value;
       outputFile.value = `${host}/download-report?filename=${data.output_file}`;
     } else if (data && data.output_file) {
