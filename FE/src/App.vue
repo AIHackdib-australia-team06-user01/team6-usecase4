@@ -111,7 +111,7 @@ async function runService() {
       controlsEvaluated.value = selectedControls.value.size
       controlsPassed.value = data.assessments.filter((a: { result: string }) => ['effective', 'not applicable', 'alternate control'].includes(a.result?.toLowerCase())).length;
       controlsPartial.value = data.assessments.filter((a: { result: string }) => a.result?.toLowerCase() === 'partially implemented').length; 
-      controlsFailed.value = selectedControls.value.size - controlsPassed.value;
+      controlsFailed.value = selectedControls.value.size - ( controlsPassed.value + controlsPartial.value );
       outputFile.value = `${host}/download-report?filename=${data.output_file}`;
     } else if (data && data.output_file) {
       outputFile.value = '';
