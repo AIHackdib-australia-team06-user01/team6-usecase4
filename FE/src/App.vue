@@ -50,6 +50,7 @@ function deselectAll() {
 // Evaluation results state
 const controlsEvaluated = ref(0)
 const controlsPassed = ref(0)
+const controlsPartial = ref(0)
 const controlsFailed = ref(0)
 const showResults = ref(false)
 const outputFile = ref('')
@@ -60,15 +61,16 @@ const showCongrats = ref(false)
 function evaluateControls() {
   
   // 80% chance to pass all, else fail all
-  if (selectedControls.value.size === 0) {
-    controlsPassed.value = 0;
-    controlsFailed.value = 0;
-    showCongrats.value = false;
-    showResults.value = true;
-    return;
-  }
+  // if (selectedControls.value.size === 0) {
+  //   controlsPassed.value = 0;
+  //   controlsPartial.value = 0; 
+  //   controlsFailed.value = 0;
+  //   showCongrats.value = false;
+  //   showResults.value = true;
+  //   return;
+  // }
 
-  const passRate = controlsPassed.value / selectedControls.value.size
+  const passRate = (controlsPassed.value + controlsPartial.value) / selectedControls.value.size
   // TODO: replace this with the real evaluation logic
   if (passRate > 0.8) {
     showCongrats.value = true;
@@ -82,6 +84,7 @@ function clearResults() {
   showResults.value = false
   controlsEvaluated.value = 0
   controlsPassed.value = 0
+  controlsPartial.value = 0
   controlsFailed.value = 0
   showCongrats.value = false
 }
@@ -107,6 +110,7 @@ async function runService() {
     if (data && Array.isArray(data.assessments)) {
       controlsEvaluated.value = selectedControls.value.size
       controlsPassed.value = data.assessments.filter((a: { result: string }) => ['effective', 'not applicable', 'alternate control'].includes(a.result?.toLowerCase())).length;
+      controlsPartial.value = data.assessments.filter((a: { result: string }) => a.result?.toLowerCase() === 'partially implemented').length; 
       controlsFailed.value = selectedControls.value.size - controlsPassed.value;
       outputFile.value = `${host}/download-report?filename=${data.output_file}`;
     } else if (data && data.output_file) {
@@ -153,6 +157,8 @@ function selectAllCategory(category: string, controls: Control[]) {
         <span class="text-blue-700 dark:text-blue-400 font-bold">{{ controlsEvaluated }}</span>
         <span class="ml-4 font-semibold text-green-700 dark:text-green-400">Passed:</span>
         <span class="text-green-700 dark:text-green-400 font-bold">{{ controlsPassed }}</span>
+        <span class="ml-4 font-semibold text-yellow-700 dark:text-yellow-400">Partial:</span>
+        <span class="text-yellow-700 dark:text-yellow-400 font-bold">{{ controlsPartial }}</span>
         <span class="ml-4 font-semibold text-red-700 dark:text-red-400">Failed:</span>
         <span class="text-red-700 dark:text-red-400 font-bold">{{ controlsFailed }}</span>
       </div>
