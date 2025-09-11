@@ -219,10 +219,11 @@ class ISMControlAssessor:
         EntraID Desired State Configuration policies:\n{self.policies}\n\n
 
         Assessment Criteria:
-        1. If all non entra related controls are assumed effective, does the provided entra desired state configuration effectively address the provided ISM control requirements? Reference specific policy settings and control IDs.
-        2. If all non entra related controls are assumed effective, is the implementation effective and actionable? Use ISM/E8 terminology and note any maturity level achieved.
-        3. If all non entra related controls are assumed effective, are there any gaps or partial implementations? Suggest improvements if needed.
-        4. Cite relevant policy titles and settings.
+        1. If this ISM control is not related to entra, then assess the control as Effective and detail the relevant policies and controls and complete the task.
+        2. If all non entra related controls are assumed effective, does the provided entra desired state configuration effectively address the provided ISM control requirements? Reference specific policy settings and control IDs.
+        3. If all non entra related controls are assumed effective, is the implementation effective and actionable? Use ISM/E8 terminology and note any maturity level achieved.
+        4. If all non entra related controls are assumed effective, are there any gaps or partial implementations? Suggest improvements if needed.
+        5. Cite relevant policy titles and settings.
 
         Respond ONLY in this JSON format:
         {{
