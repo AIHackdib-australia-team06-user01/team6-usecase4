@@ -1,0 +1,184 @@
+
+  {
+    "Patch applications": [
+      {
+        "ControlId": "ISM-1807",
+        "Description": "An automated method of asset discovery is used at least fortnightly to support the detection of assets for subsequent vulnerability scanning activities."
+      },
+      {
+        "ControlId": "ISM-1808",
+        "Description": "A vulnerability scanner with an up-to-date vulnerability database is used for vulnerability scanning activities."
+      },
+      {
+        "ControlId": "ISM-1698",
+        "Description": "A vulnerability scanner is used at least daily to identify missing patches or updates for vulnerabilities in online services."
+      },
+      {
+        "ControlId": "ISM-1699",
+        "Description": "A vulnerability scanner is used at least weekly to identify missing patches or updates for vulnerabilities in office productivity suites, web browsers and their extensions, email clients, PDF software, and security products."
+      },
+      {
+        "ControlId": "ISM-1700",
+        "Description": "A vulnerability scanner is used at least fortnightly to identify missing patches or updates for vulnerabilities in applications other than office productivity suites, web browsers and their extensions, email clients, PDF software, and security products."
+      },
+      {
+        "ControlId": "ISM-1876",
+        "Description": "Patches, updates or other vendor mitigations for vulnerabilities in online services are applied within 48 hours of release when vulnerabilities are assessed as critical by vendors or when working exploits exist."
+      },
+      {
+        "ControlId": "ISM-1690",
+        "Description": "Patches, updates or other vendor mitigations for vulnerabilities in online services are applied within two weeks of release when vulnerabilities are assessed as non-critical by vendors and no working exploits exist."
+      },
+      {
+        "ControlId": "ISM-1691",
+        "Description": "Patches, updates or other vendor mitigations for vulnerabilities in office productivity suites, web browsers and their extensions, email clients, PDF software, and security products are applied within two weeks of release."
+      },
+      {
+        "ControlId": "ISM-1693",
+        "Description": "Patches, updates or other vendor mitigations for vulnerabilities in applications other than office productivity suites, web browsers and their extensions, email clients, PDF software, and security products are applied within one month of release."
+      },
+      {
+        "ControlId": "ISM-1905",
+        "Description": "Online services that are no longer supported by vendors are removed."
+      },
+      {
+        "ControlId": "ISM-1704",
+        "Description": "Office productivity suites, web browsers and their extensions, email clients, PDF software, Adobe Flash Player, and security products that are no longer supported by vendors are removed."
+      }
+    ],
+    "Patch operating systems": [
+      {
+        "ControlId": "ISM-1807",
+        "Description": "An automated method of asset discovery is used at least fortnightly to support the detection of assets for subsequent vulnerability scanning activities."
+      },
+      {
+        "ControlId": "ISM-1808",
+        "Description": "A vulnerability scanner with an up-to-date vulnerability database is used for vulnerability scanning activities."
+      },
+      {
+        "ControlId": "ISM-1701",
+        "Description": "A vulnerability scanner is used at least daily to identify missing patches or updates for vulnerabilities in operating systems of internet-facing servers and internet-facing network devices."
+      },
+      {
+        "ControlId": "ISM-1702",
+        "Description": "A vulnerability scanner is used at least fortnightly to identify missing patches or updates for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices."
+      },
+      {
+        "ControlId": "ISM-1877",
+        "Description": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of internet-facing servers and internet-facing network devices are applied within 48 hours of release when vulnerabilities are assessed as critical by vendors or when working exploits exist."
+      },
+      {
+        "ControlId": "ISM-1694",
+        "Description": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of internet-facing servers and internet-facing network devices are applied within two weeks of release when vulnerabilities are assessed as non-critical by vendors and no working exploits exist."
+      },
+      {
+        "ControlId": "ISM-1695",
+        "Description": "Patches, updates or other vendor mitigations for vulnerabilities in operating systems of workstations, non-internet-facing servers and non-internet-facing network devices are applied within one month of release."
+      },
+      {
+        "ControlId": "ISM-1501",
+        "Description": "Operating systems that are no longer supported by vendors are replaced."
+      }
+    ], 
+    "Multi-factor authentication": [
+      { "ControlId": "ISM-1504", "Description": "Multi-factor authentication is used to authenticate users to their organisation’s online services that process, store or communicate their organisation’s sensitive data." },
+      { "ControlId": "ISM-1679", "Description": "Multi-factor authentication is used to authenticate users to third-party online services that process, store or communicate their organisation’s sensitive data." },
+      { "ControlId": "ISM-1680", "Description": "Multi-factor authentication (where available) is used to authenticate users to third-party online services that process, store or communicate their organisation’s non-sensitive data." },
+      { "ControlId": "ISM-1892", "Description": "Multi-factor authentication is used to authenticate users to their organisation’s online customer services that process, store or communicate their organisation’s sensitive customer data." },
+      { "ControlId": "ISM-1893", "Description": "Multi-factor authentication is used to authenticate users to third-party online customer services that process, store or communicate their organisation’s sensitive customer data." },
+      { "ControlId": "ISM-1681", "Description": "Multi-factor authentication is used to authenticate customers to online customer services that process, store or communicate sensitive customer data." },
+      { "ControlId": "ISM-1173", "Description": "Multi-factor authentication is used to authenticate privileged users of systems." },
+      { "ControlId": "ISM-0974", "Description": "Multi-factor authentication is used to authenticate unprivileged users of systems." },
+      { "ControlId": "ISM-1401", "Description": "Multi-factor authentication uses either: something users have and something users know, or something users have that is unlocked by something users know or are." },
+      { "ControlId": "ISM-1872", "Description": "Multi-factor authentication used for authenticating users of online services is phishing-resistant." },
+      { "ControlId": "ISM-1873", "Description": "Multi-factor authentication used for authenticating customers of online customer services provides a phishing-resistant option." },
+      { "ControlId": "ISM-1682", "Description": "Multi-factor authentication used for authenticating users of systems is phishing-resistant." },
+      { "ControlId": "ISM-1683", "Description": "Successful and unsuccessful multi-factor authentication events are centrally logged." },
+      { "ControlId": "ISM-1815", "Description": "Event logs are protected from unauthorised modification and deletion." },
+      { "ControlId": "ISM-1906", "Description": "Event logs from internet-facing servers are analysed in a timely manner to detect cybersecurity events." },
+      { "ControlId": "ISM-1228", "Description": "Cybersecurity events are analysed in a timely manner to identify cybersecurity incidents." },
+      { "ControlId": "ISM-0123", "Description": "Cybersecurity incidents are reported to the chief information security officer, or one of their delegates, as soon as possible after they occur or are discovered." },
+      { "ControlId": "ISM-0140", "Description": "Cybersecurity incidents are reported to ASD as soon as possible after they occur or are discovered." },
+      { "ControlId": "ISM-1819", "Description": "Following the identification of a cybersecurity incident, the cybersecurity incident response plan is enacted." }
+    ], 
+    "Restrict administrative privileges": [
+      { "ControlId": "ISM-1507", "Description": "Requests for privileged access to systems, applications and data repositories are validated when first requested." },
+      { "ControlId": "ISM-1647", "Description": "Privileged access to systems, applications and data repositories is disabled after 12 months unless revalidated." },
+      { "ControlId": "ISM-1648", "Description": "Privileged access to systems and applications is disabled after 45 days of inactivity." },
+      { "ControlId": "ISM-0445", "Description": "Privileged users are assigned a dedicated privileged user account to be used solely for duties requiring privileged access." },
+      { "ControlId": "ISM-1175", "Description": "Privileged user accounts (excluding those explicitly authorised to access online services) are prevented from accessing the internet, email and web services." },
+      { "ControlId": "ISM-1883", "Description": "Privileged user accounts explicitly authorised to access online services are strictly limited to only what is required for users and services to undertake their duties." },
+      { "ControlId": "ISM-1380", "Description": "Privileged users use separate privileged and unprivileged operating environments." },
+      { "ControlId": "ISM-1687", "Description": "Privileged operating environments are not virtualised within unprivileged operating environments." },
+      { "ControlId": "ISM-1688", "Description": "Unprivileged user accounts cannot logon to privileged operating environments." },
+      { "ControlId": "ISM-1689", "Description": "Privileged user accounts (excluding local administrator accounts) cannot logon to unprivileged operating environments." },
+      { "ControlId": "ISM-1387", "Description": "Administrative activities are conducted through jump servers." },
+      { "ControlId": "ISM-1685", "Description": "Credentials for break glass accounts, local administrator accounts and service accounts are long, unique, unpredictable and managed." },
+      { "ControlId": "ISM-1509", "Description": "Privileged access events are centrally logged." },
+      { "ControlId": "ISM-1650", "Description": "Privileged user account and security group management events are centrally logged." },
+      { "ControlId": "ISM-1815", "Description": "Event logs are protected from unauthorised modification and deletion." },
+      { "ControlId": "ISM-1906", "Description": "Event logs from internet-facing servers are analysed in a timely manner to detect cybersecurity events." },
+      { "ControlId": "ISM-1228", "Description": "Cybersecurity events are analysed in a timely manner to identify cybersecurity incidents." },
+      { "ControlId": "ISM-0123", "Description": "Cybersecurity incidents are reported to the chief information security officer, or one of their delegates, as soon as possible after they occur or are discovered." },
+      { "ControlId": "ISM-0140", "Description": "Cybersecurity incidents are reported to ASD as soon as possible after they occur or are discovered." },
+      { "ControlId": "ISM-1819", "Description": "Following the identification of a cybersecurity incident, the cybersecurity incident response plan is enacted." }
+    ],
+    "Application control": [
+      { "ControlId": "ISM-0843", "Description": "Application control is implemented on workstations." },
+      { "ControlId": "ISM-1490", "Description": "Application control is implemented on internet-facing servers." },
+      { "ControlId": "ISM-1870", "Description": "Application control is applied to user profiles and temporary folders used by operating systems, web browsers and email clients." },
+      { "ControlId": "ISM-1871", "Description": "Application control is applied to all locations other than user profiles and temporary folders used by operating systems, web browsers and email clients." },
+      { "ControlId": "ISM-1657", "Description": "Application control restricts the execution of executables, software libraries, scripts, installers, compiled HTML, HTML applications and control panel applets to an organisation-approved set." },
+      { "ControlId": "ISM-1544", "Description": "Microsoft’s recommended application blocklist is implemented." },
+      { "ControlId": "ISM-1582", "Description": "Application control rulesets are validated on an annual or more frequent basis." },
+      { "ControlId": "ISM-1660", "Description": "Allowed and blocked application control events are centrally logged." },
+      { "ControlId": "ISM-1815", "Description": "Event logs are protected from unauthorised modification and deletion." },
+      { "ControlId": "ISM-1906", "Description": "Event logs from internet-facing servers are analysed in a timely manner to detect cybersecurity events." },
+      { "ControlId": "ISM-1228", "Description": "Cybersecurity events are analysed in a timely manner to identify cybersecurity incidents." },
+      { "ControlId": "ISM-0123", "Description": "Cybersecurity incidents are reported to the chief information security officer, or one of their delegates, as soon as possible after they occur or are discovered." },
+      { "ControlId": "ISM-0140", "Description": "Cybersecurity incidents are reported to ASD as soon as possible after they occur or are discovered." },
+      { "ControlId": "ISM-1819", "Description": "Following the identification of a cybersecurity incident, the cybersecurity incident response plan is enacted." }
+    ], 
+    "Restrict Microsoft Office macros": [
+      { "ControlId": "ISM-1671", "Description": "Microsoft Office macros are disabled for users that do not have a demonstrated business requirement." },
+      { "ControlId": "ISM-1488", "Description": "Microsoft Office macros in files originating from the internet are blocked." },
+      { "ControlId": "ISM-1672", "Description": "Microsoft Office macro antivirus scanning is enabled." },
+      { "ControlId": "ISM-1673", "Description": "Microsoft Office macros are blocked from making Win32 API calls." },
+      { "ControlId": "ISM-1489", "Description": "Microsoft Office macro security settings cannot be changed by users." }
+    ], 
+    "User application hardening": [
+      { "ControlId": "ISM-1654", "Description": "Internet Explorer 11 is disabled or removed." },
+      { "ControlId": "ISM-1486", "Description": "Web browsers do not process Java from the internet." },
+      { "ControlId": "ISM-1485", "Description": "Web browsers do not process web advertisements from the internet." },
+      { "ControlId": "ISM-1412", "Description": "Web browsers are hardened using ASD and vendor hardening guidance, with the most restrictive guidance taking precedence when conflicts occur." },
+      { "ControlId": "ISM-1585", "Description": "Web browser security settings cannot be changed by users." },
+      { "ControlId": "ISM-1667", "Description": "Microsoft Office is blocked from creating child processes." },
+      { "ControlId": "ISM-1668", "Description": "Microsoft Office is blocked from creating executable content." },
+      { "ControlId": "ISM-1669", "Description": "Microsoft Office is blocked from injecting code into other processes." },
+      { "ControlId": "ISM-1542", "Description": "Microsoft Office is configured to prevent activation of Object Linking and Embedding packages." },
+      { "ControlId": "ISM-1859", "Description": "Office productivity suites are hardened using ASD and vendor hardening guidance, with the most restrictive guidance taking precedence when conflicts occur." },
+      { "ControlId": "ISM-1823", "Description": "Office productivity suite security settings cannot be changed by users." },
+      { "ControlId": "ISM-1670", "Description": "PDF software is blocked from creating child processes." },
+      { "ControlId": "ISM-1860", "Description": "PDF software is hardened using ASD and vendor hardening guidance, with the most restrictive guidance taking precedence when conflicts occur." },
+      { "ControlId": "ISM-1824", "Description": "PDF software security settings cannot be changed by users." },
+      { "ControlId": "ISM-1623", "Description": "PowerShell module logging, script block logging and transcription events are centrally logged." },
+      { "ControlId": "ISM-1889", "Description": "Command line process creation events are centrally logged." },
+      { "ControlId": "ISM-1815", "Description": "Event logs are protected from unauthorised modification and deletion." },
+      { "ControlId": "ISM-1906", "Description": "Event logs from internet-facing servers are analysed in a timely manner to detect cybersecurity events." },
+      { "ControlId": "ISM-1228", "Description": "Cybersecurity events are analysed in a timely manner to identify cybersecurity incidents." },
+      { "ControlId": "ISM-0123", "Description": "Cybersecurity incidents are reported to the chief information security officer, or one of their delegates, as soon as possible after they occur or are discovered." },
+      { "ControlId": "ISM-0140", "Description": "Cybersecurity incidents are reported to ASD as soon as possible after they occur or are discovered." },
+      { "ControlId": "ISM-1819", "Description": "Following the identification of a cybersecurity incident, the cybersecurity incident response plan is enacted." }
+    ], 
+    "Regular backups": [
+      { "ControlId": "ISM-1511", "Description": "Backups of data, applications and settings are performed and retained in accordance with business criticality and business continuity requirements." },
+      { "ControlId": "ISM-1810", "Description": "Backups of data, applications and settings are synchronised to enable restoration to a common point in time." },
+      { "ControlId": "ISM-1811", "Description": "Backups of data, applications and settings are retained in a secure and resilient manner." },
+      { "ControlId": "ISM-1515", "Description": "Restoration of data, applications and settings from backups to a common point in time is tested as part of disaster recovery exercises." },
+      { "ControlId": "ISM-1812", "Description": "Unprivileged user accounts cannot access backups belonging to other user accounts." },
+      { "ControlId": "ISM-1705", "Description": "Privileged user accounts (excluding backup administrator accounts) cannot access backups belonging to other user accounts." },
+      { "ControlId": "ISM-1814", "Description": "Unprivileged user accounts are prevented from modifying and deleting backups." },
+      { "ControlId": "ISM-1707", "Description": "Privileged user accounts (excluding backup administrator accounts) are prevented from modifying and deleting backups." }
+    ]
+  }
+
