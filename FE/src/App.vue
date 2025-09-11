@@ -216,8 +216,8 @@ function selectAllCategory(category: string, controls: Control[]) {
         >
           <div class="flex items-center">
             <span class="font-bold text-lg">{{ category }}</span>
-            <span class="ml-2 text-sm text-blue-300">({{ controls.length }} controls)</span>
-             <button
+            <span class="ml-2 text-sm text-blue-300">({{ controls.filter((ctrl, idx, arr) => arr.findIndex(c => c.ControlID === ctrl.ControlID) === idx).length }} controls)</span>
+            <button
           class="px-2 py-1 mx-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded shadow hover:bg-blue-200 dark:hover:bg-blue-800 text-xs font-semibold"
           @click.stop="selectAllCategory(String(category), controls)"
         >
