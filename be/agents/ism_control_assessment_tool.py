@@ -134,7 +134,8 @@ class ISMControlAssessor:
                 system_message=(
                     "You are an expert in the Australian Government Information Security Manual (ISM) and Essential Eight (E8) cybersecurity controls, with deep knowledge of securing Microsoft 365 tenancies to meet ISM requirements and Essential Eight maturity levels. \n"
                     "Your task is to: \n"
-                    "- Evaluate whether the provided policies fully and effectively implement the specified ISM control, referencing the latest ISM (September 2025) and ASD Blueprint for Secure Cloud examples. \n"
+                    "- Assume that all non entra related controls are effective. \n"
+                    "- Evaluate whether the provided Entra desired state configuration read from a tenancy is effective in achieving the specified ISM control, referencing the latest ISM (September 2025) and ASD Blueprint for Secure Cloud examples. \n"
                     "- Identify and cite relevant policy settings, mapping them to ISM and Essential Eight requirements. \n"
                     "- Clearly state the implementation status using only the allowed values: ['Not Assessed', 'Effective', 'Alternate Control', 'Not Implemented', 'Partially Implemented', 'Ineffective', 'Technically Unfeasible', 'No Visibility', 'Not Applicable']. \n"
                     "- Provide a concise, evidence-based explanation, referencing ISM control identifiers and policy titles. Highlight any gaps, partial coverage, or implementation risks. \n"
@@ -198,9 +199,9 @@ class ISMControlAssessor:
         
         You are an expert in ISM (Information Security Manual) and Essential Eight (E8) controls, specialising in evaluating whether assigned Microsoft 365 policies meet ISM control requirements and Essential Eight maturity expectations.
 
-        Task: Assess whether the following ISM control is fully, partially, or not implemented by the provided policies. Use the latest ISM (September 2025) and ASD Blueprint for Secure Cloud as references.
+        Task: Assuming all non entraID controls are implemented and are satisfactory to ISM and E8, does this entraID report from powershell desired state configuration meet the following ISM control? Does the provided entraId desired state configuration report Effective, Partially Effective, or Ineffective in implementing the the provided Information Security Manual control? Use the latest ISM (September 2025) and ASD Blueprint for Secure Cloud as references.
 
-        ISM Control:
+        Information Security Manual (ISM) Control:
         Title: {ism_title}
         Description: {ism_description}
 
@@ -215,12 +216,12 @@ class ISMControlAssessor:
         - No Visibility: Unable to verify implementation due to lack of evidence or access.
         - Not Applicable: Control is irrelevant to the system’s scope or architecture.
 
-        Available Policies:\n{self.policies}\n\n
+        EntraID Desired State Configuration policies:\n{self.policies}\n\n
 
         Assessment Criteria:
-        1. Does the policy fully address the ISM control requirements? Reference specific policy settings and control IDs.
-        2. Is the implementation effective and actionable? Use ISM/E8 terminology and note any maturity level achieved.
-        3. Are there any gaps or partial implementations? Suggest improvements if needed.
+        1. If all non entra related controls are assumed effective, does the provided entra desired state configuration effectively address the provided ISM control requirements? Reference specific policy settings and control IDs.
+        2. If all non entra related controls are assumed effective, is the implementation effective and actionable? Use ISM/E8 terminology and note any maturity level achieved.
+        3. If all non entra related controls are assumed effective, are there any gaps or partial implementations? Suggest improvements if needed.
         4. Cite relevant policy titles and settings.
 
         Respond ONLY in this JSON format:
