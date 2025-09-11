@@ -1,16 +1,17 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
-import entraData from '../public/entra_ism_ml2_technical_aligned.json'
+// import entraData from '../public/entra_ism_ml2_technical_aligned.json'
+import entraData from '../public/e8.json'
 
 const host = 'http://localhost:8000'
 
 interface Control {
-  ControlID: string;
+  ControlId: string;
   Description: string;
-  Section: string;
-  Topic: string;
-  AlignedTopics: string;
-  BlueprintArea: string;
+  // Section: string;
+  // Topic: string;
+  // AlignedTopics: string;
+  // BlueprintArea: string;
 }
 
 interface CategoryControls {
@@ -127,7 +128,7 @@ async function runService() {
 
 function selectAllCategory(category: string, controls: Control[]) {
   const newSet = new Set(selectedControls.value);
-  controls.forEach(ctrl => newSet.add(ctrl.ControlID));
+  controls.forEach(ctrl => newSet.add(ctrl.ControlId));
   selectedControls.value = newSet;
 }
 </script>
@@ -216,7 +217,7 @@ function selectAllCategory(category: string, controls: Control[]) {
         >
           <div class="flex items-center">
             <span class="font-bold text-lg">{{ category }}</span>
-            <span class="ml-2 text-sm text-blue-300">({{ controls.filter((ctrl, idx, arr) => arr.findIndex(c => c.ControlID === ctrl.ControlID) === idx).length }} controls)</span>
+            <span class="ml-2 text-sm text-blue-300">({{ controls.filter((ctrl, idx, arr) => arr.findIndex(c => c.ControlId === ctrl.ControlId) === idx).length }} controls)</span>
             <button
           class="px-2 py-1 mx-2 bg-blue-100 dark:bg-blue-900 text-blue-700 dark:text-blue-200 rounded shadow hover:bg-blue-200 dark:hover:bg-blue-800 text-xs font-semibold"
           @click.stop="selectAllCategory(String(category), controls)"
@@ -240,25 +241,25 @@ function selectAllCategory(category: string, controls: Control[]) {
 
       <ul v-if="openCategory === category" class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-lg shadow divide-y divide-gray-200 dark:divide-gray-700 mt-2">
         <li
-          v-for="control in controls.filter((ctrl, idx, arr) => arr.findIndex(c => c.ControlID === ctrl.ControlID) === idx).sort((a, b) => a.ControlID.localeCompare(b.ControlID))"
-          :key="control.ControlID"
+          v-for="control in controls.filter((ctrl, idx, arr) => arr.findIndex(c => c.ControlId === ctrl.ControlId) === idx).sort((a, b) => a.ControlId.localeCompare(b.ControlId))"
+          :key="control.ControlId"
           class="flex items-center px-2 py-1 transition-all duration-200 ease-in-out relative group hover:bg-gray-100 dark:hover:bg-gray-800 hover:py-3"
         >
           <label
-            :for="category + '-' + control.ControlID"
+            :for="category + '-' + control.ControlId"
             class="font-semibold text-gray-800 dark:text-gray-100 cursor-pointer flex flex-row items-center gap-3 text-sm py-2 px-2 rounded hover:bg-blue-50 dark:hover:bg-blue-900 transition-all w-full"
             style="user-select: none;"
           >
             <input
               type="checkbox"
               class="form-checkbox h-5 w-5 text-blue-600 mr-2 cursor-pointer"
-              :id="category + '-' + control.ControlID"
-              :checked="selectedControls.has(control.ControlID)"
-              @change="toggleControlSelection(control.ControlID)"
+              :id="category + '-' + control.ControlId"
+              :checked="selectedControls.has(control.ControlId)"
+              @change="toggleControlSelection(control.ControlId)"
               tabindex="0"
             />
             <div class="flex flex-col">
-              <span>{{ control.ControlID }}</span>
+              <span>{{ control.ControlId }}</span>
               <span
                 class="text-gray-600 dark:text-gray-300 text-xs mt-0.5 max-w-xl transition-all duration-200 opacity-0 max-h-0 group-hover:opacity-100 group-hover:max-h-32 overflow-hidden"
               >
